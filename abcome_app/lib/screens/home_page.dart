@@ -1,4 +1,5 @@
-import 'package:abcome_app/components/app_drawer.dart';
+import 'package:abcome_app/components/my_app_bar.dart';
+import 'package:abcome_app/components/my_app_drawer.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -10,21 +11,35 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('A.B.Come'),
+      appBar: const MyAppBar(title: 'A.B.Come'),
+      drawer: const MyAppDrawer(),
+      body: Stack(
+        children: [
+          Container(
+            width: double.infinity,
+            height: double.infinity,
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('images/background.jpg'),
+                fit: BoxFit.cover,
+              ),
+            ),
+            child: null,
+          ),
+          Positioned(
+            bottom: 0,
+            right: 0,
+            child: Image.asset(
+              'images/logotipo.png',
+              width: 250,
+              height: 250,
+            ),
+          ),
+        ],
       ),
-      drawer: const AppDrawer(),
-      body: Center(
-        child: IconButton(
-          icon: Image.asset('images/logotipo.jpg'),
-          iconSize: 200,
-          onPressed: () {  },
-        ),
-      ),// This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }

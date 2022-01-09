@@ -1,4 +1,5 @@
-import 'package:abcome_app/components/app_drawer.dart';
+import 'package:abcome_app/components/my_app_bar.dart';
+import 'package:abcome_app/components/my_app_drawer.dart';
 import 'package:flutter/material.dart';
 
 class VotingPage extends StatefulWidget {
@@ -13,13 +14,11 @@ class _VotingPageState extends State<VotingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Votação'),
-        ),
-        drawer: const AppDrawer(),
+        appBar: const MyAppBar(title: 'Votação'),
+        drawer: const MyAppDrawer(),
         body: Center(
           child: IconButton(
-            icon: Image.asset('images/logotipo.jpg'),
+            icon: Image.asset('images/logotipo.png'),
             iconSize: 200,
             onPressed: () {  },
           ),

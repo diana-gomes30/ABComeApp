@@ -3,10 +3,8 @@ import 'package:abcome_app/screens/members_page.dart';
 import 'package:abcome_app/screens/voting_page.dart';
 import 'package:flutter/material.dart';
 
-class AppDrawer extends StatelessWidget {
-  const AppDrawer({
-    Key? key,
-  }) : super(key: key);
+class MyAppDrawer extends StatelessWidget {
+  const MyAppDrawer({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -16,13 +14,13 @@ class AppDrawer extends StatelessWidget {
         children: [
           DrawerHeader(
             decoration: const BoxDecoration(
-              color: Colors.blue,
+              color: Color(0xff161837),
             ),
             child: Center(
               child: Column(
                 children: const [
                   Image(
-                    image: AssetImage('images/logotipo.jpg'),
+                    image: AssetImage('images/logotipo.png'),
                     height: 100,
                     width: 100,
                   ),
