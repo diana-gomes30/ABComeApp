@@ -1,4 +1,4 @@
-
+import 'package:abcome_app/utils/constants.dart';
 import 'package:flutter/material.dart';
 
 class MyAppBar extends StatelessWidget with PreferredSizeWidget {
@@ -10,7 +10,7 @@ class MyAppBar extends StatelessWidget with PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       title: Text(title),
-      backgroundColor: const Color(0xff161837),
+      backgroundColor: kPrimaryColor,
     );
   }
 

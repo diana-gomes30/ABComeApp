@@ -1,6 +1,9 @@
 import 'package:abcome_app/components/my_app_bar.dart';
 import 'package:abcome_app/components/my_app_drawer.dart';
+import 'package:abcome_app/utils/constants.dart';
 import 'package:flutter/material.dart';
+
+import 'member_details_page.dart';
 
 class MembersPage extends StatefulWidget {
   const MembersPage({Key? key}) : super(key: key);
@@ -17,10 +20,14 @@ class _MembersPageState extends State<MembersPage> {
       appBar: const MyAppBar(title: 'Membros'),
       drawer: const MyAppDrawer(),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: kPrimaryColor,
         child: const Icon(
           Icons.add,
+          color: kSecondaryColor,
         ),
-        onPressed: () {},
+        onPressed: () {
+          Navigator.pushNamed(context, MemberDetailsPage.id);
+        },
       ),
       body: Column(
         children: const [

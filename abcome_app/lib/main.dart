@@ -1,4 +1,5 @@
 import 'package:abcome_app/screens/home_page.dart';
+import 'package:abcome_app/screens/member_details_page.dart';
 import 'package:abcome_app/screens/members_page.dart';
 import 'package:abcome_app/screens/voting_page.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +23,7 @@ class MyApp extends StatelessWidget {
         HomePage.id: (context) => const HomePage(),
         VotingPage.id: (context) => const VotingPage(),
         MembersPage.id: (context) => const MembersPage(),
+        MemberDetailsPage.id: (context) => const MemberDetailsPage(),
       },
     );
   }

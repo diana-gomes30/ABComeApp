@@ -1,6 +1,7 @@
 import 'package:abcome_app/screens/home_page.dart';
 import 'package:abcome_app/screens/members_page.dart';
 import 'package:abcome_app/screens/voting_page.dart';
+import 'package:abcome_app/utils/constants.dart';
 import 'package:flutter/material.dart';
 
 class MyAppDrawer extends StatelessWidget {
@@ -14,7 +15,7 @@ class MyAppDrawer extends StatelessWidget {
         children: [
           DrawerHeader(
             decoration: const BoxDecoration(
-              color: Color(0xff161837),
+              color: kPrimaryColor,
             ),
             child: Center(
               child: Column(
@@ -28,7 +29,7 @@ class MyAppDrawer extends StatelessWidget {
                   Text(
                     'A.B.Come',
                     style: TextStyle(
-                      color: Colors.white,
+                      color: kSecondaryColor,
                       fontSize: 20,
                     ),
                   ),
