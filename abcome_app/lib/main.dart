@@ -1,4 +1,5 @@
 import 'package:abcome_app/screens/home_page.dart';
+import 'package:abcome_app/screens/loading_page.dart';
 import 'package:abcome_app/screens/member_details_page.dart';
 import 'package:abcome_app/screens/members_page.dart';
 import 'package:abcome_app/screens/voting_page.dart';
@@ -13,13 +14,18 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Para evitar o delay ao carregar a imagem de fundo
+    precacheImage(const AssetImage("images/background.jpg"), context);
+
     return MaterialApp(
       title: 'A.B.Come',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primaryColor: Colors.black,
+        backgroundColor: Colors.white,
       ),
-      initialRoute: HomePage.id,
+      initialRoute: LoadingPage.id,
       routes: {
+        LoadingPage.id: (context) => const LoadingPage(),
         HomePage.id: (context) => const HomePage(),
         VotingPage.id: (context) => const VotingPage(),
         MembersPage.id: (context) => const MembersPage(),
