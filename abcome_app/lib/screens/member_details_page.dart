@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 
 class MemberDetailsPage extends StatefulWidget {
   const MemberDetailsPage({Key? key, this.memberId}) : super(key: key);
-  static const String id = '/member_details';
+  static const String id = '/member_details_page';
 
   final int? memberId;
 

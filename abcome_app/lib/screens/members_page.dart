@@ -7,7 +7,7 @@ import 'member_details_page.dart';
 
 class MembersPage extends StatefulWidget {
   const MembersPage({Key? key}) : super(key: key);
-  static const String id = '/members';
+  static const String id = '/members_page';
 
   @override
   _MembersPageState createState() => _MembersPageState();

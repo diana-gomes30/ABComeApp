@@ -6,7 +6,7 @@ import 'package:page_transition/page_transition.dart';
 
 class LoadingPage extends StatefulWidget {
   const LoadingPage({Key? key}) : super(key: key);
-  static const String id = '/loading';
+  static const String id = '/loading_page';
 
   @override
   _LoadingPageState createState() => _LoadingPageState();
@@ -15,18 +15,20 @@ class LoadingPage extends StatefulWidget {
 class _LoadingPageState extends State<LoadingPage> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: AnimatedSplashScreen(
-        duration: 2000,
-        animationDuration: const Duration(milliseconds: 2000),
-        splash: const Image(
-          image: AssetImage('images/logotipo.png'),
+    return SafeArea(
+      child: Scaffold(
+        body: AnimatedSplashScreen(
+          duration: 2000,
+          animationDuration: const Duration(milliseconds: 2000),
+          splash: const Image(
+            image: AssetImage('images/logotipo.png'),
+          ),
+          splashIconSize: 300,
+          nextScreen: HomePage(),
+          splashTransition: SplashTransition.fadeTransition,
+          pageTransitionType: PageTransitionType.fade,
+          backgroundColor: kPrimaryColor,
         ),
-        splashIconSize: 300,
-        nextScreen: const HomePage(),
-        splashTransition: SplashTransition.fadeTransition,
-        pageTransitionType: PageTransitionType.fade,
-        backgroundColor: kPrimaryColor,
       ),
     );
   }

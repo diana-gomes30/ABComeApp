@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 class VotingPage extends StatefulWidget {
   const VotingPage({Key? key}) : super(key: key);
-  static const String id = '/voting';
+  static const String id = '/voting_page';
 
   @override
   _VotingPageState createState() => _VotingPageState();
