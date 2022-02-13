@@ -1,3 +1,6 @@
+import 'package:abcome_app/models/person.dart';
+import 'package:abcome_app/repositories/person_repository.dart';
+import 'package:abcome_app/widgets/item_members_list_widget.dart';
 import 'package:abcome_app/widgets/my_app_bar.dart';
 import 'package:abcome_app/widgets/my_app_drawer.dart';
 import 'package:abcome_app/utils/constants.dart';
@@ -14,6 +17,25 @@ class MembersPage extends StatefulWidget {
 }
 
 class _MembersPageState extends State<MembersPage> {
+  bool isLoading = false;
+
+  List<Person> personsList = [];
+
+  @override
+  void initState() {
+    super.initState();
+
+    getPersons();
+  }
+
+  Future<void> getPersons() async {
+    setState(() => isLoading = true);
+
+    personsList = await PersonRepository.readAll();
+
+    setState(() => isLoading = false);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,72 +48,31 @@ class _MembersPageState extends State<MembersPage> {
           color: kSecondaryColor,
         ),
         onPressed: () {
-          Navigator.pushNamed(context, MemberDetailsPage.id);
+          Navigator.pushNamed(context, MemberDetailsPage.id).whenComplete(
+            () async {
+              setState(() => isLoading = true);
+              await getPersons();
+              setState(() => isLoading = false);
+            },
+          );
         },
       ),
-      body: Column(
-        children: const [
-          ListTile(
-            title: Text('Person 1'),
-            leading: Image(
-              image: AssetImage('images/logotipo.png'),
-            ),
-          ),
-          ListTile(
-            title: Text('Person 2'),
-            leading: Image(
-              image: AssetImage('images/logotipo.png'),
-            ),
-          ),
-          ListTile(
-            title: Text('Person 3'),
-            leading: Image(
-              image: AssetImage('images/logotipo.png'),
-            ),
-          ),
-          ListTile(
-            title: Text('Person 4'),
-            leading: Image(
-              image: AssetImage('images/logotipo.png'),
-            ),
-          ),
-          ListTile(
-            title: Text('Person 5'),
-            leading: Image(
-              image: AssetImage('images/logotipo.png'),
-            ),
-          ),
-          ListTile(
-            title: Text('Person 6'),
-            leading: Image(
-              image: AssetImage('images/logotipo.png'),
-            ),
-          ),
-          ListTile(
-            title: Text('Person 7'),
-            leading: Image(
-              image: AssetImage('images/logotipo.png'),
-            ),
-          ),
-          ListTile(
-            title: Text('Person 8'),
-            leading: Image(
-              image: AssetImage('images/logotipo.png'),
-            ),
-          ),
-          ListTile(
-            title: Text('Person 9'),
-            leading: Image(
-              image: AssetImage('images/logotipo.png'),
-            ),
-          ),
-          ListTile(
-            title: Text('Person 10'),
-            leading: Image(
-              image: AssetImage('images/logotipo.png'),
-            ),
-          ),
-        ],
+      body: GridView.builder(
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 4,
+        ),
+        itemCount: personsList.length,
+        itemBuilder: (BuildContext context, int index) {
+          final person = personsList[index];
+          //get your item data here ...
+          return ItemMembersListWidget(
+            person: personsList[index],
+            onClicked: () {
+
+              print('Here');
+            },
+          );
+        },
       ),
     );
   }

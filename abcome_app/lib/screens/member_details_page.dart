@@ -47,7 +47,10 @@ class _MemberDetailsPageState extends State<MemberDetailsPage> {
           Icons.add,
           color: kSecondaryColor,
         ),
-        onPressed: () { insertPerson(); },
+        onPressed: () async {
+          await insertPerson();
+          Navigator.pop(context);
+        },
       ),
       body: Center(
         child: Row(
