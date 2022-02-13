@@ -1,5 +1,5 @@
-import 'package:abcome_app/components/my_app_bar.dart';
-import 'package:abcome_app/components/my_app_drawer.dart';
+import 'package:abcome_app/widgets/my_app_bar.dart';
+import 'package:abcome_app/widgets/my_app_drawer.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {

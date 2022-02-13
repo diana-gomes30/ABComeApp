@@ -5,7 +5,7 @@ class PersonRepository {
   // <---------------------------------> Métodos CRUD à tabela de Pessoas <--------------------------------->
 
   // Método que devolve uma Pessoa pelo ID
-  Future<Person> readById(int id) async {
+  static Future<Person> readById(int id) async {
     final db = await ABComeDatabase.instance.database;
 
     final maps = await db!.query(
@@ -23,7 +23,7 @@ class PersonRepository {
   }
 
   // Método que devolve uma Pessoa pelo Nome
-  Future<Person?> readByName(String name) async {
+  static Future<Person?> readByName(String name) async {
     final db = await ABComeDatabase.instance.database;
 
     final maps = await db!.query(
@@ -41,7 +41,7 @@ class PersonRepository {
   }
 
   // Método que devolve todas as Pessoas
-  Future<List<Person>> readAll() async {
+  static Future<List<Person>> readAll() async {
     final db = await ABComeDatabase.instance.database;
 
     final orderByName = '${PersonFields.name} ASC';
@@ -54,7 +54,7 @@ class PersonRepository {
   }
 
   // Método que cria uma Pessoa
-  Future<Person> insert(Person person) async {
+  static Future<Person> insert(Person person) async {
     final db = await ABComeDatabase.instance.database;
 
     final id = await db!.insert(tablePersons, person.toJson());
@@ -62,7 +62,7 @@ class PersonRepository {
   }
 
   // Método que atualiza uma Pessoa
-  Future<int> update(Person person) async {
+  static Future<int> update(Person person) async {
     final db = await ABComeDatabase.instance.database;
 
     return db!.update(
@@ -74,7 +74,7 @@ class PersonRepository {
   }
 
   // Método que apaga uma Pessoa
-  Future<int> delete(int personId) async {
+  static Future<int> delete(int personId) async {
     final db = await ABComeDatabase.instance.database;
 
     return db!.delete(
