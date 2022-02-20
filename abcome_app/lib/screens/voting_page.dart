@@ -1,3 +1,4 @@
+import 'package:abcome_app/utils/constants.dart';
 import 'package:abcome_app/widgets/my_app_bar.dart';
 import 'package:abcome_app/widgets/my_app_drawer.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +19,7 @@ class _VotingPageState extends State<VotingPage> {
         drawer: const MyAppDrawer(),
         body: Center(
           child: IconButton(
-            icon: Image.asset('images/logotipo.png'),
+            icon: Image.asset(kLogoImagePath),
             iconSize: 200,
             onPressed: () {  },
           ),

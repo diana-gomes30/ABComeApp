@@ -68,8 +68,19 @@ class _MembersPageState extends State<MembersPage> {
           return ItemMembersListWidget(
             person: personsList[index],
             onClicked: () {
-
-              print('Here');
+              final int? personId = personsList[index].id;
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => MemberDetailsPage(
+                    personId: personId,
+                  ),
+                ),
+              ).whenComplete(() async {
+                setState(() => isLoading = true);
+                await getPersons();
+                setState(() => isLoading = false);
+              });
             },
           );
         },

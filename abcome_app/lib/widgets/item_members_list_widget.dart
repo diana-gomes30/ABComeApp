@@ -1,4 +1,5 @@
 import 'package:abcome_app/models/person.dart';
+import 'package:abcome_app/utils/constants.dart';
 import 'package:abcome_app/utils/utils.dart';
 import 'package:flutter/material.dart';
 
@@ -23,12 +24,19 @@ class ItemMembersListWidget extends StatelessWidget {
             ClipOval(
               child: Material(
                 color: Colors.transparent,
-                child: Utils.imageFromBase64String(
-                  person.image,
-                  width: 100.0,
-                  height: 100.0,
-                  fit: BoxFit.cover,
-                ),
+                child: person.image == ''
+                    ? const Image(
+                        image: AssetImage(kLogoImagePath),
+                        width: 100,
+                        height: 100,
+                        fit: BoxFit.cover,
+                      )
+                    : Utils.imageFromBase64String(
+                        person.image,
+                        width: 100.0,
+                        height: 100.0,
+                        fit: BoxFit.cover,
+                      ),
               ),
             ),
             Container(

@@ -21,7 +21,7 @@ class _LoadingPageState extends State<LoadingPage> {
           duration: 2000,
           animationDuration: const Duration(milliseconds: 2000),
           splash: const Image(
-            image: AssetImage('images/logotipo.png'),
+            image: AssetImage(kLogoImagePath),
           ),
           splashIconSize: 300,
           nextScreen: HomePage(),

@@ -1,3 +1,4 @@
+import 'package:abcome_app/utils/constants.dart';
 import 'package:abcome_app/widgets/my_app_bar.dart';
 import 'package:abcome_app/widgets/my_app_drawer.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +24,7 @@ class _HomePageState extends State<HomePage> {
             height: double.infinity,
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('images/background.jpg'),
+                image: AssetImage(kBackgroundImagePath),
                 fit: BoxFit.cover,
               ),
             ),
@@ -33,7 +34,7 @@ class _HomePageState extends State<HomePage> {
             bottom: 0,
             right: 0,
             child: Image.asset(
-              'images/logotipo.png',
+              kLogoImagePath,
               width: 250,
               height: 250,
             ),

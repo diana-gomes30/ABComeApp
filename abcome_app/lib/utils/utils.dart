@@ -1,10 +1,12 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
 
 class Utils {
-
   // <------------------------- Utils for Images ------------------------->
   static Image imageFromBase64String(String base64String,
       {double? width, double? height, BoxFit? fit}) {
@@ -31,6 +33,16 @@ class Utils {
 
   static String base64String(Uint8List data) {
     return base64Encode(data);
+  }
+
+  static Future<File> getImageFileFromAssets(String path) async {
+    final byteData = await rootBundle.load(path);
+
+    final file = File('${(await getTemporaryDirectory()).path}/$path');
+    //await file.writeAsBytes(byteData.buffer
+        //.asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
+
+    return file;
   }
 
   // <-------------------- Utils for Date and Time Pickers -------------------->

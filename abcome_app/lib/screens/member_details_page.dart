@@ -8,6 +8,7 @@ import 'package:abcome_app/utils/constants.dart';
 import 'package:abcome_app/widgets/profile_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 
 class MemberDetailsPage extends StatefulWidget {
   const MemberDetailsPage({Key? key, this.personId}) : super(key: key);
@@ -21,17 +22,21 @@ class MemberDetailsPage extends StatefulWidget {
 
 class _MemberDetailsPageState extends State<MemberDetailsPage> {
   late int? personId;
+
   late Person? person;
   late TextEditingController nameController;
   late String imagePath = '';
+  String defaultImagePath = kLogoImagePath;
 
   final ImagePicker _picker = ImagePicker();
   bool isLoading = false;
+  bool isEditing = false;
 
   @override
   void initState() {
     super.initState();
 
+    print('IdPerson: ${widget.personId}');
     refreshData();
   }
 
@@ -39,24 +44,23 @@ class _MemberDetailsPageState extends State<MemberDetailsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MyAppBar(
-          title:
-              personId == null ? 'Adicionar Membro' : 'Editar Membro'),
+        title: isEditing ? 'Editar Membro' : 'Adicionar Membro',
+      ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: kPrimaryColor,
-        child: const Icon(
-          Icons.add,
+        child: Icon(
+          isEditing ? Icons.save : Icons.add,
           color: kSecondaryColor,
         ),
         onPressed: () async {
-          await insertPerson();
-          Navigator.pop(context);
+          isEditing ? await updatePerson() : await insertPerson();
         },
       ),
       body: Center(
         child: Row(
           children: [
             ProfileWidget(
-              imagePath: imagePath != '' ? imagePath : 'images/logotipo.png',
+              imagePath: imagePath != '' ? imagePath : defaultImagePath,
               onClicked: () async {
                 await modalBottomSheet();
               },
@@ -98,14 +102,17 @@ class _MemberDetailsPageState extends State<MemberDetailsPage> {
     setState(() => isLoading = true);
 
     nameController = TextEditingController(text: '');
-    personId = widget.personId ?? 1;
+    personId = widget.personId;
 
-    if(personId != null) {
+    if (personId != null) {
+      isEditing = true;
       person = await PersonRepository.readById(personId!);
       if (person != null) {
         nameController = TextEditingController(text: person!.name);
         imagePath = person!.image;
       }
+    } else {
+      isEditing = false;
     }
 
     setState(() => isLoading = false);
@@ -119,7 +126,9 @@ class _MemberDetailsPageState extends State<MemberDetailsPage> {
       );
 
       await PersonRepository.insert(person);
+      Navigator.pop(context);
     }
+    // por fazer show dialog
   }
 
   Future updatePerson() async {
@@ -130,7 +139,9 @@ class _MemberDetailsPageState extends State<MemberDetailsPage> {
           );
 
       await PersonRepository.update(person);
+      Navigator.pop(context);
     }
+    // por fazer show dialog
   }
 
   Future<void> _imgFromCamera() async {

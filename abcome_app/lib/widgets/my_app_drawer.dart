@@ -21,7 +21,7 @@ class MyAppDrawer extends StatelessWidget {
               child: Column(
                 children: const [
                   Image(
-                    image: AssetImage('images/logotipo.png'),
+                    image: AssetImage(kLogoImagePath),
                     height: 100,
                     width: 100,
                   ),

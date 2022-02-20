@@ -3,6 +3,7 @@ import 'package:abcome_app/screens/loading_page.dart';
 import 'package:abcome_app/screens/member_details_page.dart';
 import 'package:abcome_app/screens/members_page.dart';
 import 'package:abcome_app/screens/voting_page.dart';
+import 'package:abcome_app/utils/constants.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -15,7 +16,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Para evitar o delay ao carregar a imagem de fundo
-    precacheImage(const AssetImage("images/background.jpg"), context);
+    precacheImage(const AssetImage(kBackgroundImagePath), context);
 
     return MaterialApp(
       title: 'A.B.Come',
