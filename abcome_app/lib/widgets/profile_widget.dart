@@ -7,10 +7,12 @@ class ProfileWidget extends StatelessWidget {
     Key? key,
     required this.imagePath,
     required this.onClicked,
+    this.isSettingsPage = false,
   }) : super(key: key);
 
   final String imagePath;
   final VoidCallback onClicked;
+  final bool isSettingsPage;
 
   @override
   Widget build(BuildContext context) {
@@ -21,11 +23,13 @@ class ProfileWidget extends StatelessWidget {
         child: Stack(
           children: [
             buildImage(),
-            Positioned(
-              bottom: 0,
-              right: 20,
-              child: buildEditIcon(color),
-            ),
+            isSettingsPage
+                ? const SizedBox(height: 0)
+                : Positioned(
+                    bottom: 0,
+                    right: 20,
+                    child: buildEditIcon(color),
+                  ),
           ],
         ),
       ),

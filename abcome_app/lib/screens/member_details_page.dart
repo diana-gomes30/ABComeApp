@@ -8,7 +8,6 @@ import 'package:abcome_app/utils/constants.dart';
 import 'package:abcome_app/widgets/profile_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:path_provider/path_provider.dart';
 
 class MemberDetailsPage extends StatefulWidget {
   const MemberDetailsPage({Key? key, this.personId}) : super(key: key);
@@ -56,43 +55,45 @@ class _MemberDetailsPageState extends State<MemberDetailsPage> {
           isEditing ? await updatePerson() : await insertPerson();
         },
       ),
-      body: Center(
-        child: Row(
-          children: [
-            ProfileWidget(
-              imagePath: imagePath != '' ? imagePath : defaultImagePath,
-              onClicked: () async {
-                await modalBottomSheet();
-              },
-            ),
-            Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text(
-                    'Nome:',
-                    style: TextStyle(fontSize: 30),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 75, vertical: 20),
-                    child: TextField(
-                      style: const TextStyle(
-                        fontSize: 20,
-                      ),
-                      autofocus: false,
-                      controller: nameController,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12.0),
+      body: SafeArea(
+        child: Center(
+          child: Row(
+            children: [
+              ProfileWidget(
+                imagePath: imagePath != '' ? imagePath : defaultImagePath,
+                onClicked: () async {
+                  await modalBottomSheet();
+                },
+              ),
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'Nome:',
+                      style: TextStyle(fontSize: 30),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 75, vertical: 20),
+                      child: TextField(
+                        style: const TextStyle(
+                          fontSize: 20,
+                        ),
+                        autofocus: false,
+                        controller: nameController,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

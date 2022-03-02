@@ -17,11 +17,13 @@ class _VotingPageState extends State<VotingPage> {
     return Scaffold(
         appBar: const MyAppBar(title: 'Votação'),
         drawer: const MyAppDrawer(),
-        body: Center(
-          child: IconButton(
-            icon: Image.asset(kLogoImagePath),
-            iconSize: 200,
-            onPressed: () {  },
+        body: SafeArea(
+          child: Center(
+            child: IconButton(
+              icon: Image.asset(kLogoImagePath),
+              iconSize: 200,
+              onPressed: () {  },
+            ),
           ),
         ),
     );
