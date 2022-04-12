@@ -1,6 +1,7 @@
 import 'package:abcome_app/models/person.dart';
 import 'package:abcome_app/models/person_type.dart';
-import 'package:abcome_app/models/setting.dart';
+import 'package:abcome_app/models/mandate.dart';
+import 'package:abcome_app/repositories/mandate_repository.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -28,6 +29,7 @@ class ABComeDatabase {
   Future<Database?> _createDB(Database db, int newVersion) async {
     // Type of properties
     const idType = 'INTEGER PRIMARY KEY AUTOINCREMENT';
+    const intType = 'INTEGER NOT NULL';
     const textType = 'TEXT NOT NULL';
 
     // Create Table Persons
@@ -38,29 +40,34 @@ class ABComeDatabase {
       ${PersonFields.image} $textType
       )''');
 
-    // Create Table Person Types
+    // Create Table Mandates
     await db.execute('''
-      CREATE TABLE $tablePersonTypes (
-      ${PersonTypeFields.id} $idType,
-      ${PersonTypeFields.type} $textType,
-      ${PersonTypeFields.description} $textType
+      CREATE TABLE $tableMandates (
+      ${MandateFields.id} $idType,
+      ${MandateFields.president} $intType,
+      ${MandateFields.treasurer} $intType,
+      ${MandateFields.yearIni} $intType,
+      ${MandateFields.yearFim} $intType,
+      ${MandateFields.personLimit} $intType
       )''');
 
-    // Create Table Settings
-    await db.execute('''
-      CREATE TABLE $tableSettings (
-      ${SettingFields.id} $idType,
-      ${SettingFields.year} $idType,
-      ${SettingFields.personLimit} $idType,
-      ${SettingFields.fkSettingPerson} $textType,
-      ${SettingFields.fkSettingPersonType} $textType,
-      FOREIGN KEY (${SettingFields.fkSettingPerson}) REFERENCES $tablePersons (${PersonFields.id}),
-      FOREIGN KEY (${SettingFields.fkSettingPersonType}) REFERENCES $tablePersonTypes (${PersonTypeFields.id})
-      )''');
+    final defaultMandate = Mandate(
+      id: 0,
+      president: 0,
+      treasurer: 0,
+      yearIni: 2021,
+      yearFim: 2022,
+      personLimit: 5,
+    );
+    await db.insert(tableMandates, defaultMandate.toJson());
   }
 
   // <-----------------------------------> Para apagar a base de dados <----------------------------------->
-  Future<void> deleteDatabase() => databaseFactory.deleteDatabase('abcome.db');
+  Future<void> deleteDatabase() async {
+    final dbPath = await getDatabasesPath();
+    final path = join(dbPath, 'abcome.db');
+    databaseFactory.deleteDatabase(path);
+  }
 
   // <---------------------------------> Métodos de ligação à base de dados <--------------------------------->
 

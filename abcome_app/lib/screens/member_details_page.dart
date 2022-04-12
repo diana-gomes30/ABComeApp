@@ -52,6 +52,7 @@ class _MemberDetailsPageState extends State<MemberDetailsPage> {
           color: kSecondaryColor,
         ),
         onPressed: () async {
+          print('AQUI - Update: $isEditing');
           isEditing ? await updatePerson() : await insertPerson();
         },
       ),
@@ -121,11 +122,14 @@ class _MemberDetailsPageState extends State<MemberDetailsPage> {
 
   Future insertPerson() async {
     if (nameController.text != '') {
+      print('Controller Name: ${nameController.text}');
       final person = Person(
         name: nameController.text,
         image: imagePath,
       );
 
+      print('Person Name: ${person.name}');
+      print('Person Image: ${person.image}');
       await PersonRepository.insert(person);
       Navigator.pop(context);
     }

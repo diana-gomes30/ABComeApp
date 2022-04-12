@@ -1,3 +1,5 @@
+import 'package:abcome_app/database/abcome_database.dart';
+import 'package:abcome_app/repositories/mandate_repository.dart';
 import 'package:abcome_app/utils/constants.dart';
 import 'package:abcome_app/widgets/my_app_bar.dart';
 import 'package:abcome_app/widgets/my_app_drawer.dart';
@@ -12,6 +14,24 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
+  @override
+  void initState() {
+    super.initState();
+
+    //deleteDB();
+    //createDB();
+  }
+
+  void createDB() async {
+    await ABComeDatabase.instance.database;
+    //await MandateRepository.insertDefault();
+  }
+
+  void deleteDB() async {
+    await ABComeDatabase.instance.deleteDatabase();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

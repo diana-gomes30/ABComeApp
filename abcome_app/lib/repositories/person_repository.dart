@@ -5,7 +5,7 @@ class PersonRepository {
   // <---------------------------------> Métodos CRUD à tabela de Pessoas <--------------------------------->
 
   // Método que devolve uma Pessoa pelo ID
-  static Future<Person> readById(int id) async {
+  static Future<Person?> readById(int id) async {
     final db = await ABComeDatabase.instance.database;
 
     final maps = await db!.query(
@@ -18,7 +18,7 @@ class PersonRepository {
     if (maps.isNotEmpty) {
       return Person.fromJson(maps.first);
     } else {
-      throw Exception('ID $id not found.');
+      return null;
     }
   }
 
@@ -43,19 +43,23 @@ class PersonRepository {
   // Método que devolve todas as Pessoas
   static Future<List<Person>> readAll() async {
     final db = await ABComeDatabase.instance.database;
+    List<Person> personList = [];
 
     final orderByName = '${PersonFields.name} ASC';
 
     // Ambas as propriedades result fazem a mesma coisa (a primeira permite usar sql puro)
     //final result = await db!.rawQuery('SELECT * FROM $tablePersons ORDER BY $orderByName');
     final result = await db!.query(tablePersons, orderBy: orderByName);
+    personList = result.map((json) => Person.fromJson(json)).toList();
 
-    return result.map((json) => Person.fromJson(json)).toList();
+    return personList;
   }
 
   // Método que cria uma Pessoa
   static Future<Person> insert(Person person) async {
     final db = await ABComeDatabase.instance.database;
+    if(db == null)
+      print('database null');
 
     final id = await db!.insert(tablePersons, person.toJson());
     return person.copy(id: id);

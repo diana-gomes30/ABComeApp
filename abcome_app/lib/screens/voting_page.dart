@@ -15,17 +15,34 @@ class _VotingPageState extends State<VotingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: const MyAppBar(title: 'Votação'),
-        drawer: const MyAppDrawer(),
-        body: SafeArea(
-          child: Center(
-            child: IconButton(
+      appBar: const MyAppBar(title: 'Votação'),
+      drawer: const MyAppDrawer(),
+      body: SafeArea(
+        child: Center(
+          child: Column(
+            children: [
+              Container(
+                width: MediaQuery.of(context).size.width*0.20,
+                child: CheckboxListTile(
+                  title: Text('Member 1'),
+                  controlAffinity: ListTileControlAffinity.platform,
+                  value: true,
+                  onChanged: (value) { },
+                ),
+              ),
+              TextButton(
+                onPressed: () {},
+                child: Text('Iniciar uma nova votação'),
+              ),
+            ],
+          ),
+          /* IconButton(
               icon: Image.asset(kLogoImagePath),
               iconSize: 200,
               onPressed: () {  },
-            ),
-          ),
+            ),*/
         ),
+      ),
     );
   }
 }
