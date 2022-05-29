@@ -48,8 +48,8 @@ class MandateRepository {
     final maps = await db!.query(
       tableMandates,
       columns: MandateFields.values,
-      where: '${MandateFields.yearIni} = ?',
-      whereArgs: [year],
+      //where: '${MandateFields.yearIni} = ?',
+      //whereArgs: [year],
     );
 
     if (maps.isNotEmpty) {
@@ -66,7 +66,7 @@ class MandateRepository {
     final maps = await db!.query(
       tableMandates,
       columns: MandateFields.values,
-      orderBy: '${MandateFields.yearIni} DESC'
+      //orderBy: '${MandateFields.yearIni} DESC'
     );
 
     if (maps.isNotEmpty) {
@@ -80,11 +80,11 @@ class MandateRepository {
   static Future<List<Mandate>> readAll() async {
     final db = await ABComeDatabase.instance.database;
 
-    const orderByYear = '${MandateFields.yearIni} DESC';
+    //const orderByYear = '${MandateFields.yearIni} DESC';
 
     // Ambas as propriedades result fazem a mesma coisa (a primeira permite usar sql puro)
     //final result = await db!.rawQuery('SELECT * FROM tableMandates ORDER BY $orderByYear');
-    final result = await db!.query(tableMandates, orderBy: orderByYear);
+    final result = await db!.query(tableMandates);
 
     return result.map((json) => Mandate.fromJson(json)).toList();
   }
@@ -93,7 +93,7 @@ class MandateRepository {
   static Future<Mandate> insert(Mandate mandate) async {
     final db = await ABComeDatabase.instance.database;
 
-    print('Mandate: ${mandate.president} / ${mandate.treasurer} / ${mandate.yearIni} / ${mandate.yearFim}');
+    //print('Mandate: ${mandate.president} / ${mandate.treasurer} / ${mandate.yearIni} / ${mandate.yearFim}');
     final id = await db!.insert(tableMandates, mandate.toJson());
     return mandate.copy(id: id);
   }

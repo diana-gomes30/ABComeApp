@@ -75,26 +75,21 @@ class MyAppDrawer extends StatelessWidget {
                 ],
               ),
             ),
-            Container(
-              child: Divider(
-                height: 0.1,
-                color: kPrimaryColor,
-                indent: 10,
-                endIndent: 10,
-              ),
+            const Divider(
+              height: 0.1,
+              color: kPrimaryColor,
+              indent: 10,
+              endIndent: 10,
             ),
-            Container(
-              //padding: EdgeInsets.all(10),
-              child: ListTile(
-                title: const Text('Definições'),
-                leading: const Icon(
-                  Icons.settings,
-                  color: kPrimaryColor,
-                ),
-                onTap: () {
-                  Navigator.pushReplacementNamed(context, SettingsPage.id);
-                },
+            ListTile(
+              title: const Text('Definições'),
+              leading: const Icon(
+                Icons.settings,
+                color: kPrimaryColor,
               ),
+              onTap: () {
+                Navigator.pushReplacementNamed(context, SettingsPage.id);
+              },
             ),
           ],
         ),

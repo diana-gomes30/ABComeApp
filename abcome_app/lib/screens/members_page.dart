@@ -57,36 +57,38 @@ class _MembersPageState extends State<MembersPage> {
           );
         },
       ),
-      body: SafeArea(
-        child: GridView.builder(
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 4,
-          ),
-          itemCount: personsList.length,
-          itemBuilder: (BuildContext context, int index) {
-            final person = personsList[index];
-            //get your item data here ...
-            return ItemMembersListWidget(
-              person: personsList[index],
-              onClicked: () {
-                final int? personId = personsList[index].id;
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => MemberDetailsPage(
-                      personId: personId,
-                    ),
-                  ),
-                ).whenComplete(() async {
-                  setState(() => isLoading = true);
-                  await getPersons();
-                  setState(() => isLoading = false);
-                });
-              },
-            );
-          },
-        ),
-      ),
+      body: isLoading
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : SafeArea(
+              child: GridView.builder(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 4,
+                ),
+                itemCount: personsList.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return ItemMembersListWidget(
+                    person: personsList[index],
+                    onClicked: () {
+                      final int? personId = personsList[index].id;
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => MemberDetailsPage(
+                            personId: personId,
+                          ),
+                        ),
+                      ).whenComplete(() async {
+                        setState(() => isLoading = true);
+                        await getPersons();
+                        setState(() => isLoading = false);
+                      });
+                    },
+                  );
+                },
+              ),
+            ),
     );
   }
 }

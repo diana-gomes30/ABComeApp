@@ -1,7 +1,8 @@
 import 'package:abcome_app/models/person.dart';
-import 'package:abcome_app/models/person_type.dart';
+import 'package:abcome_app/models/poll.dart';
+import 'package:abcome_app/models/statistic.dart';
+import 'package:abcome_app/models/vote.dart';
 import 'package:abcome_app/models/mandate.dart';
-import 'package:abcome_app/repositories/mandate_repository.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -23,52 +24,6 @@ class ABComeDatabase {
     return _database;
   }
 
-  // <---------------------------------> Método que cria as tabelas da base de dados <--------------------------------->
-
-  // Método que permite criar as tabelas
-  Future<Database?> _createDB(Database db, int newVersion) async {
-    // Type of properties
-    const idType = 'INTEGER PRIMARY KEY AUTOINCREMENT';
-    const intType = 'INTEGER NOT NULL';
-    const textType = 'TEXT NOT NULL';
-
-    // Create Table Persons
-    await db.execute('''
-      CREATE TABLE $tablePersons (
-      ${PersonFields.id} $idType,
-      ${PersonFields.name} $textType,
-      ${PersonFields.image} $textType
-      )''');
-
-    // Create Table Mandates
-    await db.execute('''
-      CREATE TABLE $tableMandates (
-      ${MandateFields.id} $idType,
-      ${MandateFields.president} $intType,
-      ${MandateFields.treasurer} $intType,
-      ${MandateFields.yearIni} $intType,
-      ${MandateFields.yearFim} $intType,
-      ${MandateFields.personLimit} $intType
-      )''');
-
-    final defaultMandate = Mandate(
-      id: 0,
-      president: 0,
-      treasurer: 0,
-      yearIni: 2021,
-      yearFim: 2022,
-      personLimit: 5,
-    );
-    await db.insert(tableMandates, defaultMandate.toJson());
-  }
-
-  // <-----------------------------------> Para apagar a base de dados <----------------------------------->
-  Future<void> deleteDatabase() async {
-    final dbPath = await getDatabasesPath();
-    final path = join(dbPath, 'abcome.db');
-    databaseFactory.deleteDatabase(path);
-  }
-
   // <---------------------------------> Métodos de ligação à base de dados <--------------------------------->
 
   // Método que permite fazer a ligação à base de dados
@@ -84,5 +39,125 @@ class ABComeDatabase {
     final db = await instance.database;
 
     return db!.close();
+  }
+
+  // <---------------------------------> Método que cria as tabelas da base de dados <--------------------------------->
+
+  // Método que permite criar as tabelas
+  Future<Database?> _createDB(Database db, int newVersion) async {
+    // Type of properties
+    const idType = 'INTEGER PRIMARY KEY AUTOINCREMENT';
+    const intType = 'INTEGER NOT NULL';
+    const textType = 'TEXT NOT NULL';
+    const boolType = 'BOOLEAN NOT NULL';
+
+    // Create Table Persons
+    await db.execute('''
+      CREATE TABLE $tablePersons (
+      ${PersonFields.id} $idType,
+      ${PersonFields.name} $textType,
+      ${PersonFields.image} $textType,
+      ${PersonFields.inactive} $boolType
+      )''');
+
+    // Create Table Polls
+    await db.execute('''
+    CREATE TABLE $tablePolls (
+    ${PollFields.id} $idType,
+    ${PollFields.numPersons} $intType,
+    ${PollFields.year} $intType,
+    ${PollFields.presidentId} $intType,
+    ${PollFields.treasurerId} $intType,
+    ${PollFields.active} $boolType,
+    ${PollFields.cancelled} $boolType
+    )''');
+
+    // Create Table Votes
+    await db.execute('''
+    CREATE TABLE $tableVotes (
+    ${VoteFields.id} $idType,
+    ${VoteFields.personId} $intType,
+    ${VoteFields.pollId} $intType,
+    ${VoteFields.presidentId} $intType,
+    ${VoteFields.treasurerId} $intType,
+    CONSTRAINT fk_poll FOREIGN KEY (${VoteFields.pollId}) REFERENCES $tablePolls(${PollFields.id}),
+    CONSTRAINT fk_president FOREIGN KEY (${VoteFields.presidentId}) REFERENCES $tablePersons(${PersonFields.id}),
+    CONSTRAINT fk_treasurer FOREIGN KEY (${VoteFields.treasurerId}) REFERENCES $tablePersons(${PersonFields.id})
+    )''');
+
+    // Create Table Statistics
+    await db.execute('''
+    CREATE TABLE $tableStatistics (
+    ${StatisticFields.id} $idType,
+    ${StatisticFields.personId} $intType,
+    ${StatisticFields.year} $intType,
+    ${StatisticFields.pollId} $intType,
+    ${StatisticFields.presidentNumVotes} $intType,
+    ${StatisticFields.treasurerNumVotes} $intType,
+    CONSTRAINT fk_poll FOREIGN KEY (${StatisticFields.pollId}) REFERENCES $tablePolls(${PollFields.id}),
+    CONSTRAINT fk_person FOREIGN KEY (${StatisticFields.personId}) REFERENCES $tablePersons(${PersonFields.id})
+    )''');
+
+    // Create Table Mandates
+    await db.execute('''
+      CREATE TABLE $tableMandates (
+      ${MandateFields.id} $idType,
+      ${MandateFields.personLimit} $intType,
+      ${MandateFields.presidentId} $intType,
+      ${MandateFields.treasurerId} $intType,
+      ${MandateFields.active} $boolType,
+      ${MandateFields.pollId} $intType,
+      CONSTRAINT fk_president FOREIGN KEY (${MandateFields.presidentId}) REFERENCES $tablePersons(${PersonFields.id}),
+      CONSTRAINT fk_treasurer FOREIGN KEY (${MandateFields.treasurerId}) REFERENCES $tablePersons(${PersonFields.id}),
+      CONSTRAINT fk_poll FOREIGN KEY (${MandateFields.pollId}) REFERENCES $tablePolls(${PollFields.id})
+      )''');
+
+      await insertDefaultData(db);
+  }
+
+  Future<void> insertDefaultData(Database db) async {
+    final defaultPresident = Person(
+      id: 1,
+      name: 'Presidente',
+      image: '',
+      inactive: 0, // False
+    );
+    await db.insert(tablePersons, defaultPresident.toJson());
+
+    final defaultTreasurer = Person(
+      id: 2,
+      name: 'Tesoureiro',
+      image: '',
+      inactive: 0, // False
+    );
+    await db.insert(tablePersons, defaultTreasurer.toJson());
+
+    final defaultPoll = Poll(
+      id: 0,
+      numPersons: 0,
+      year: 2021,
+      presidentId: defaultPresident.id ?? 1,
+      treasurerId: defaultTreasurer.id ?? 2,
+      active: 0, // False
+      cancelled: 0, // False
+    );
+    await db.insert(tablePolls, defaultPoll.toJson());
+
+    final defaultMandate = Mandate(
+      id: 0,
+      personLimit: 5,
+      presidentId: defaultPresident.id ?? 1,
+      treasurerId: defaultTreasurer.id ?? 2,
+      active: 1, // True
+      pollId: 0,
+    );
+    await db.insert(tableMandates, defaultMandate.toJson());
+  }
+
+  // <-----------------------------------> Para apagar a base de dados <----------------------------------->
+  Future<void> deleteDatabase() async {
+    final dbPath = await getDatabasesPath();
+    final path = join(dbPath, 'abcome.db');
+    databaseFactory.deleteDatabase(path);
   }
 }

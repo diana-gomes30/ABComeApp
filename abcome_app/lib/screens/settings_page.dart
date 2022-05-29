@@ -51,10 +51,10 @@ class _SettingsPageState extends State<SettingsPage> {
       currentMandate = mandate;
     }
 
-    currentPresident =
+    /*currentPresident =
         await PersonRepository.readById(currentMandate.president);
     currentTreasurer =
-        await PersonRepository.readById(currentMandate.treasurer);
+        await PersonRepository.readById(currentMandate.treasurer);*/
 
     setState(() => isLoading = false);
   }
@@ -85,9 +85,9 @@ class _SettingsPageState extends State<SettingsPage> {
                   children: [
                     Container(
                       padding: const EdgeInsets.all(18),
-                      child: Text(
-                        'Ano de Mandato: ${currentMandate.yearIni} / ${currentMandate.yearFim}',
-                        style: const TextStyle(
+                      child: const Text('Ano de Mandato: 20xx/20xx',
+                        //'Ano de Mandato: ${currentMandate.yearIni} / ${currentMandate.yearFim}',
+                        style: TextStyle(
                           fontSize: 25,
                           fontWeight: FontWeight.bold,
                           color: kPrimaryColor,
@@ -369,7 +369,7 @@ class _SettingsPageState extends State<SettingsPage> {
       int? yearFim,
       int? personLimit}) async {
 
-    final mandateUpdated = Mandate(
+    /*final mandateUpdated = Mandate(
       id: currentMandate.id,
       president: presidentId ?? currentMandate.president,
       treasurer: treasurerId ?? currentMandate.treasurer,
@@ -379,6 +379,6 @@ class _SettingsPageState extends State<SettingsPage> {
     ).copy();
 
     print('ID --> ${mandateUpdated.id}');
-    await MandateRepository.update(mandateUpdated);
+    await MandateRepository.update(mandateUpdated);*/
   }
 }

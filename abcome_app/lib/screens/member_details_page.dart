@@ -126,6 +126,7 @@ class _MemberDetailsPageState extends State<MemberDetailsPage> {
       final person = Person(
         name: nameController.text,
         image: imagePath,
+        inactive: 0, // False
       );
 
       print('Person Name: ${person.name}');
