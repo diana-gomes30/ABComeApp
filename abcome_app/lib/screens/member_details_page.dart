@@ -49,7 +49,7 @@ class _MemberDetailsPageState extends State<MemberDetailsPage> {
         backgroundColor: kPrimaryColor,
         child: Icon(
           isEditing ? Icons.save : Icons.add,
-          color: kSecondaryColor,
+          color: kWhiteColor,
         ),
         onPressed: () async {
           print('AQUI - Update: $isEditing');
@@ -126,6 +126,7 @@ class _MemberDetailsPageState extends State<MemberDetailsPage> {
       final person = Person(
         name: nameController.text,
         image: imagePath,
+        isVoting: 1, // True
         inactive: 0, // False
       );
 

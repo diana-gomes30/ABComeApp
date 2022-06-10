@@ -57,6 +57,7 @@ class ABComeDatabase {
       ${PersonFields.id} $idType,
       ${PersonFields.name} $textType,
       ${PersonFields.image} $textType,
+      ${PersonFields.isVoting} $boolType,
       ${PersonFields.inactive} $boolType
       )''');
 
@@ -120,6 +121,7 @@ class ABComeDatabase {
       id: 1,
       name: 'Presidente',
       image: '',
+      isVoting: 1,
       inactive: 0, // False
     );
     await db.insert(tablePersons, defaultPresident.toJson());
@@ -128,6 +130,7 @@ class ABComeDatabase {
       id: 2,
       name: 'Tesoureiro',
       image: '',
+      isVoting: 1,
       inactive: 0, // False
     );
     await db.insert(tablePersons, defaultTreasurer.toJson());

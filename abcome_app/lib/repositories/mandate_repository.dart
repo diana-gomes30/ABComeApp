@@ -5,21 +5,21 @@ class MandateRepository {
   // <---------------------------------> Métodos CRUD à tabela de Mandatos <--------------------------------->
 
   // Método que devolve um Mandato por defeito
-  static Future<Mandate> readDefault() async {
+  static Future<Mandate> readActive() async {
     final db = await ABComeDatabase.instance.database;
-    const id = 0;
+    const active = 1; // True
 
     final maps = await db!.query(
       tableMandates,
       columns: MandateFields.values,
-      where: '${MandateFields.id} = ?',
-      whereArgs: [id],
+      where: '${MandateFields.active} = ?',
+      whereArgs: [active],
     );
 
     if (maps.isNotEmpty) {
       return Mandate.fromJson(maps.first);
     } else {
-      throw Exception('ID $id not found.');
+      throw Exception('Mandate not found.');
     }
   }
 

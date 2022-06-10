@@ -46,7 +46,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
     final mandate = await MandateRepository.readLast();
     if (mandate == null) {
-      currentMandate = await MandateRepository.readDefault();
+      currentMandate = await MandateRepository.readActive();
     } else {
       currentMandate = mandate;
     }

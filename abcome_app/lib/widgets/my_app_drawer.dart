@@ -30,7 +30,7 @@ class MyAppDrawer extends StatelessWidget {
                     Text(
                       'A.B.Come',
                       style: TextStyle(
-                        color: kSecondaryColor,
+                        color: kWhiteColor,
                         fontSize: 20,
                       ),
                     ),
