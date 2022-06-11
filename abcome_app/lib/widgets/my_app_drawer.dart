@@ -1,7 +1,7 @@
 import 'package:abcome_app/screens/home_page.dart';
-import 'package:abcome_app/screens/members_page.dart';
+import 'package:abcome_app/screens/members/members_page.dart';
 import 'package:abcome_app/screens/settings_page.dart';
-import 'package:abcome_app/screens/voting_page.dart';
+import 'package:abcome_app/screens/voting/poll_page.dart';
 import 'package:abcome_app/utils/constants.dart';
 import 'package:flutter/material.dart';
 
@@ -59,7 +59,7 @@ class MyAppDrawer extends StatelessWidget {
                       color: kPrimaryColor,
                     ),
                     onTap: () {
-                      Navigator.pushReplacementNamed(context, VotingPage.id);
+                      Navigator.pushReplacementNamed(context, PollPage.id);
                     },
                   ),
                   ListTile(

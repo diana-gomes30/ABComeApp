@@ -18,7 +18,7 @@ class ProfileWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     const color = kPrimaryColor;
     return Container(
-      padding: const EdgeInsets.only(left: 75),
+      padding: const EdgeInsets.only(left: 75, right: 75),
       child: Center(
         child: Stack(
           children: [

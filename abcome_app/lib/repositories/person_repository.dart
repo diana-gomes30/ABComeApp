@@ -26,11 +26,13 @@ class PersonRepository {
   static Future<Person?> readByName(String name) async {
     final db = await ABComeDatabase.instance.database;
 
+    int inactive = 0;
+
     final maps = await db!.query(
       tablePersons,
       columns: PersonFields.values,
-      where: '${PersonFields.name} = ?',
-      whereArgs: [name],
+      where: '${PersonFields.name} = ? and ${PersonFields.inactive} = ?',
+      whereArgs: [name, inactive],
     );
 
     if (maps.isNotEmpty) {
@@ -45,11 +47,39 @@ class PersonRepository {
     final db = await ABComeDatabase.instance.database;
     List<Person> personList = [];
 
-    final orderByName = '${PersonFields.name} ASC';
+    const orderByName = '${PersonFields.name} ASC';
+    int inactive = 0;
 
     // Ambas as propriedades result fazem a mesma coisa (a primeira permite usar sql puro)
     //final result = await db!.rawQuery('SELECT * FROM $tablePersons ORDER BY $orderByName');
-    final result = await db!.query(tablePersons, orderBy: orderByName);
+    final result = await db!.query(
+      tablePersons,
+      columns: PersonFields.values,
+      where: '${PersonFields.inactive} = ?',
+      whereArgs: [inactive],
+      orderBy: orderByName,
+    );
+    personList = result.map((json) => Person.fromJson(json)).toList();
+
+    return personList;
+  }
+
+  // Método que devolve todas as Pessoas que votarão
+  static Future<List<Person>> readCanVote() async {
+    final db = await ABComeDatabase.instance.database;
+    List<Person> personList = [];
+
+    const orderByName = '${PersonFields.name} ASC';
+    int isVoting = 1;
+    int inactive = 0;
+
+    final result = await db!.query(
+        tablePersons,
+        columns: PersonFields.values,
+        where: '${PersonFields.isVoting} = ? and ${PersonFields.inactive} = ?',
+        whereArgs: [isVoting, inactive],
+        orderBy: orderByName,
+    );
     personList = result.map((json) => Person.fromJson(json)).toList();
 
     return personList;
@@ -58,8 +88,6 @@ class PersonRepository {
   // Método que cria uma Pessoa
   static Future<Person> insert(Person person) async {
     final db = await ABComeDatabase.instance.database;
-    if(db == null)
-      print('database null');
 
     final id = await db!.insert(tablePersons, person.toJson());
     return person.copy(id: id);

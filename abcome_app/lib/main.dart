@@ -1,9 +1,10 @@
 import 'package:abcome_app/screens/home_page.dart';
 import 'package:abcome_app/screens/loading_page.dart';
-import 'package:abcome_app/screens/member_details_page.dart';
-import 'package:abcome_app/screens/members_page.dart';
+import 'package:abcome_app/screens/members/member_details_page.dart';
+import 'package:abcome_app/screens/members/members_page.dart';
 import 'package:abcome_app/screens/settings_page.dart';
-import 'package:abcome_app/screens/voting_page.dart';
+import 'package:abcome_app/screens/voting/poll_page.dart';
+import 'package:abcome_app/screens/voting/vote_page.dart';
 import 'package:abcome_app/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:loader_overlay/loader_overlay.dart';
@@ -31,7 +32,8 @@ class MyApp extends StatelessWidget {
         routes: {
           LoadingPage.id: (context) => const LoadingPage(),
           HomePage.id: (context) => const HomePage(),
-          VotingPage.id: (context) => const VotingPage(),
+          PollPage.id: (context) => const PollPage(),
+          VotePage.id: (context) => const VotePage(),
           MembersPage.id: (context) => const MembersPage(),
           MemberDetailsPage.id: (context) => const MemberDetailsPage(),
           SettingsPage.id: (context) => const SettingsPage(),

@@ -45,6 +45,7 @@ class _MembersPageState extends State<MembersPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: kWhiteColor,
       appBar: const MyAppBar(title: 'Membros'),
       drawer: const MyAppDrawer(),
       floatingActionButton: FloatingActionButton(

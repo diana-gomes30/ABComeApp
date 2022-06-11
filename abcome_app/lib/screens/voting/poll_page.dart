@@ -1,5 +1,11 @@
 import 'package:abcome_app/models/person.dart';
+import 'package:abcome_app/models/poll.dart';
+import 'package:abcome_app/models/statistic.dart';
+import 'package:abcome_app/models/vote.dart';
 import 'package:abcome_app/repositories/person_repository.dart';
+import 'package:abcome_app/repositories/poll_repository.dart';
+import 'package:abcome_app/repositories/vote_repository.dart';
+import 'package:abcome_app/screens/voting/vote_page.dart';
 import 'package:abcome_app/utils/constants.dart';
 import 'package:abcome_app/utils/utils.dart';
 import 'package:abcome_app/widgets/my_app_bar.dart';
@@ -7,19 +13,21 @@ import 'package:abcome_app/widgets/my_app_drawer.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-class VotingPage extends StatefulWidget {
-  const VotingPage({Key? key}) : super(key: key);
-  static const String id = '/voting_page';
+class PollPage extends StatefulWidget {
+  const PollPage({Key? key}) : super(key: key);
+  static const String id = '/poll_page';
 
   @override
-  _VotingPageState createState() => _VotingPageState();
+  _PollPageState createState() => _PollPageState();
 }
 
-class _VotingPageState extends State<VotingPage> {
+class _PollPageState extends State<PollPage> {
   bool isLoading = false;
 
   bool value = true;
   List<Person> personsList = [];
+  int numPersons = 0;
+  late Poll currentPoll;
 
   @override
   void initState() {
@@ -32,6 +40,13 @@ class _VotingPageState extends State<VotingPage> {
     setState(() => isLoading = true);
 
     personsList = await PersonRepository.readAll();
+    int i = 0;
+    for (Person person in personsList) {
+      if (person.isVoting == 1) {
+        i++;
+      }
+    }
+    numPersons = i;
 
     setState(() => isLoading = false);
   }
@@ -83,6 +98,7 @@ class _VotingPageState extends State<VotingPage> {
                             onTap: () {
                               setState(() {
                                 value = !value;
+                                personsList[i].isVoting = value ? 1 : 0;
                               });
                             },
                             child: Builder(
@@ -111,7 +127,16 @@ class _VotingPageState extends State<VotingPage> {
                               isLoading = true;
                             });
 
-                            await updatePersons();
+                            bool updated = await updatePersons();
+                            if (updated) {
+                              bool havePoll = await insertUpdatePoll();
+                              if (havePoll) {
+                                bool inserted = await insertVotes();
+                                if (inserted) {
+                                  Navigator.pushNamed(context, VotePage.id);
+                                }
+                              }
+                            }
 
                             setState(() {
                               isLoading = false;
@@ -185,11 +210,74 @@ class _VotingPageState extends State<VotingPage> {
     );
   }
 
-
-  Future updatePersons() async {
-    for(Person person in personsList) {
-      await PersonRepository.update(person);
+  Future<bool> updatePersons() async {
+    try {
+      int i = 0;
+      for (Person person in personsList) {
+        await PersonRepository.update(person);
+        if (person.isVoting == 1) {
+          i++;
+        }
+      }
+      setState(() {
+        numPersons = i;
+      });
+      return true;
+    } catch (e) {
+      return false;
     }
-    //Navigator.pop(context);
+  }
+
+  Future insertUpdatePoll() async {
+    try {
+      int currentYear = DateTime.now().year;
+      print('Ano atual: $currentYear');
+
+      Poll? pollExists = await PollRepository.readActiveByYear(currentYear);
+      if (pollExists == null) {
+        final poll = Poll(
+          numPersons: numPersons,
+          presidentId: 0,
+          treasurerId: 0,
+          year: currentYear,
+          active: 1,
+          cancelled: 0,
+        );
+        currentPoll = await PollRepository.insert(poll);
+      } else {
+        final pollUpdated = pollExists.copy(
+          numPersons: numPersons,
+        );
+        currentPoll = await PollRepository.update(pollUpdated);
+      }
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> insertVotes() async {
+    try {
+      for (Person person in personsList) {
+        if (person.id != null && currentPoll.id != null) {
+          Vote? voteExists = await VoteRepository.readByPersonPoll(
+            person.id!,
+            currentPoll.id!,
+          );
+          if (voteExists == null) {
+            final vote = Vote(
+              personId: person.id!,
+              pollId: currentPoll.id!,
+              presidentId: 0,
+              treasurerId: 0,
+            );
+            await VoteRepository.insert(vote);
+          }
+        }
+      }
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 }

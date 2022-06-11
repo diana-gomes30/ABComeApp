@@ -57,6 +57,8 @@ class ABComeDatabase {
       ${PersonFields.id} $idType,
       ${PersonFields.name} $textType,
       ${PersonFields.image} $textType,
+      ${PersonFields.wasPresident} $boolType,
+      ${PersonFields.wasTreasurer} $boolType,
       ${PersonFields.isVoting} $boolType,
       ${PersonFields.inactive} $boolType
       )''');
@@ -121,6 +123,8 @@ class ABComeDatabase {
       id: 1,
       name: 'Presidente',
       image: '',
+      wasPresident: 1,
+      wasTreasurer: 0,
       isVoting: 1,
       inactive: 0, // False
     );
@@ -130,6 +134,8 @@ class ABComeDatabase {
       id: 2,
       name: 'Tesoureiro',
       image: '',
+      wasPresident: 0,
+      wasTreasurer: 1,
       isVoting: 1,
       inactive: 0, // False
     );
