@@ -3,6 +3,24 @@ import 'package:abcome_app/models/poll.dart';
 
 class PollRepository {
 
+  // Método que devolve a votação por Id
+  static Future<Poll?> readById(int id) async {
+    final db = await ABComeDatabase.instance.database;
+
+    final maps = await db!.query(
+      tablePolls,
+      columns: PollFields.values,
+      where: '${PollFields.id} = ?',
+      whereArgs: [id],
+    );
+
+    if (maps.isNotEmpty) {
+      return Poll.fromJson(maps.first);
+    } else {
+      return null;
+    }
+  }
+
   // Método que devolve a votação ativa por ano
   static Future<Poll?> readActiveByYear(int year) async {
     final db = await ABComeDatabase.instance.database;

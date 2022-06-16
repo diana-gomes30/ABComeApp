@@ -35,7 +35,7 @@ class _MembersPageState extends State<MembersPage> {
     setState(() => isLoading = true);
 
     personsList = await PersonRepository.readAll();
-    Mandate mandate = await MandateRepository.readActive();
+    //Mandate? mandate = await MandateRepository.readActive();
     //personLimit = mandate.personLimit;
     print('Person Limit $personLimit');
 

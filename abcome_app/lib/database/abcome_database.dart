@@ -141,10 +141,11 @@ class ABComeDatabase {
     );
     await db.insert(tablePersons, defaultTreasurer.toJson());
 
+    int year = (DateTime.now().year)-1;
     final defaultPoll = Poll(
-      id: 0,
+      id: 1,
       numPersons: 0,
-      year: 2021,
+      year: year,
       presidentId: defaultPresident.id ?? 1,
       treasurerId: defaultTreasurer.id ?? 2,
       active: 0, // False
@@ -153,12 +154,12 @@ class ABComeDatabase {
     await db.insert(tablePolls, defaultPoll.toJson());
 
     final defaultMandate = Mandate(
-      id: 0,
-      personLimit: 5,
+      id: 1,
+      personLimit: 20,
       presidentId: defaultPresident.id ?? 1,
       treasurerId: defaultTreasurer.id ?? 2,
+      pollId: 1,
       active: 1, // True
-      pollId: 0,
     );
     await db.insert(tableMandates, defaultMandate.toJson());
   }

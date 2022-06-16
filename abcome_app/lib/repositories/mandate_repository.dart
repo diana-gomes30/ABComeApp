@@ -5,7 +5,7 @@ class MandateRepository {
   // <---------------------------------> Métodos CRUD à tabela de Mandatos <--------------------------------->
 
   // Método que devolve um Mandato por defeito
-  static Future<Mandate> readActive() async {
+  static Future<Mandate?> readActive() async {
     final db = await ABComeDatabase.instance.database;
     const active = 1; // True
 
@@ -19,12 +19,12 @@ class MandateRepository {
     if (maps.isNotEmpty) {
       return Mandate.fromJson(maps.first);
     } else {
-      throw Exception('Mandate not found.');
+      return null;
     }
   }
 
   // Método que devolve um Mandato pelo ID
-  static Future<Mandate> readById(int id) async {
+  static Future<Mandate?> readById(int id) async {
     final db = await ABComeDatabase.instance.database;
 
     final maps = await db!.query(
@@ -37,7 +37,7 @@ class MandateRepository {
     if (maps.isNotEmpty) {
       return Mandate.fromJson(maps.first);
     } else {
-      throw Exception('ID $id not found.');
+      return null;
     }
   }
 

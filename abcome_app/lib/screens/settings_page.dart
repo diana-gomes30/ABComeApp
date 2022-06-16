@@ -1,9 +1,12 @@
 import 'package:abcome_app/models/mandate.dart';
 import 'package:abcome_app/models/person.dart';
+import 'package:abcome_app/models/poll.dart';
 import 'package:abcome_app/repositories/mandate_repository.dart';
 import 'package:abcome_app/repositories/person_repository.dart';
+import 'package:abcome_app/repositories/poll_repository.dart';
 import 'package:abcome_app/utils/constants.dart';
 import 'package:abcome_app/utils/utils.dart';
+import 'package:abcome_app/widgets/custom_divider.dart';
 import 'package:abcome_app/widgets/my_app_bar.dart';
 import 'package:abcome_app/widgets/my_app_drawer.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +24,8 @@ class _SettingsPageState extends State<SettingsPage> {
   bool isLoading = false;
   late TextEditingController memberslimitController;
 
-  late Mandate currentMandate;
+  Mandate? currentMandate;
+  Poll? currentPoll;
   Person? currentPresident;
   Person? currentTreasurer;
 
@@ -51,10 +55,16 @@ class _SettingsPageState extends State<SettingsPage> {
       currentMandate = mandate;
     }
 
-    /*currentPresident =
-        await PersonRepository.readById(currentMandate.president);
-    currentTreasurer =
-        await PersonRepository.readById(currentMandate.treasurer);*/
+    currentPoll = await PollRepository.readById(
+      currentMandate != null ? currentMandate!.pollId : 1,
+    );
+
+    currentPresident = await PersonRepository.readById(
+      currentMandate != null ? currentMandate!.presidentId : 1,
+    );
+    currentTreasurer = await PersonRepository.readById(
+      currentMandate != null ? currentMandate!.treasurerId : 2,
+    );
 
     setState(() => isLoading = false);
   }
@@ -85,9 +95,11 @@ class _SettingsPageState extends State<SettingsPage> {
                   children: [
                     Container(
                       padding: const EdgeInsets.all(18),
-                      child: const Text('Ano de Mandato: 20xx/20xx',
-                        //'Ano de Mandato: ${currentMandate.yearIni} / ${currentMandate.yearFim}',
-                        style: TextStyle(
+                      child: Text(
+                        currentPoll != null
+                            ? 'Ano de Mandato: ${currentPoll!.year}/${(currentPoll!.year) + 1}'
+                            : 'Ano de Mandato: 20xx/20xx',
+                        style: const TextStyle(
                           fontSize: 25,
                           fontWeight: FontWeight.bold,
                           color: kPrimaryColor,
@@ -154,8 +166,8 @@ class _SettingsPageState extends State<SettingsPage> {
                                 padding:
                                     const EdgeInsets.only(bottom: 20, top: 5),
                                 child: Text(
-                                  currentPresident != null
-                                      ? currentPresident!.name
+                                  currentTreasurer != null
+                                      ? currentTreasurer!.name
                                       : 'Tesoureiro não definido',
                                   style: const TextStyle(
                                     fontSize: 25,
@@ -168,12 +180,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         ),
                       ],
                     ),
-                    const Divider(
-                      color: kPrimaryColor,
-                      height: 5,
-                      indent: 50,
-                      endIndent: 50,
-                    ),
+                    const CustomDivider(),
                     Column(
                       children: [
                         Row(
@@ -238,34 +245,6 @@ class _SettingsPageState extends State<SettingsPage> {
                               padding: const EdgeInsets.only(left: 50),
                               width: MediaQuery.of(context).size.width * 0.70,
                               child: TextButton(
-                                onPressed: () {},
-                                child: const Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: ListTile(
-                                    leading: Icon(
-                                      Icons.arrow_right_sharp,
-                                      size: 40,
-                                      color: kPrimaryColor,
-                                    ),
-                                    title: Text(
-                                      'Alterar Anos de Mandato',
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.only(left: 50),
-                              width: MediaQuery.of(context).size.width * 0.70,
-                              child: TextButton(
                                 onPressed: () {
                                   buildLimitPersonDialog(context);
                                 },
@@ -294,7 +273,9 @@ class _SettingsPageState extends State<SettingsPage> {
                               child: Align(
                                 alignment: Alignment.centerRight,
                                 child: Text(
-                                  'Max: ${currentMandate.personLimit}',
+                                  currentMandate != null
+                                      ? 'Max: ${currentMandate!.personLimit}'
+                                      : 'Max: 2',
                                   style: const TextStyle(
                                     fontSize: 18,
                                     color: Colors.black,
@@ -368,7 +349,6 @@ class _SettingsPageState extends State<SettingsPage> {
       int? yearIni,
       int? yearFim,
       int? personLimit}) async {
-
     /*final mandateUpdated = Mandate(
       id: currentMandate.id,
       president: presidentId ?? currentMandate.president,
