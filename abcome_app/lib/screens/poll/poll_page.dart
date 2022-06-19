@@ -32,17 +32,8 @@ class _PollPageState extends State<PollPage> {
   void initState() {
     super.initState();
 
-    //getActivePoll();
     getPersons();
   }
-
-  /*Future<void> getActivePoll() async {
-    setState(() => isLoading = true);
-
-    Poll? activePoll = await PollRepository.readCurrentPoll();
-
-    setState(() => isLoading = false);
-  }*/
 
   Future<void> getPersons() async {
     setState(() => isLoading = true);
@@ -50,6 +41,7 @@ class _PollPageState extends State<PollPage> {
     personsList = await PersonRepository.readAll();
     int i = 0;
     for (Person person in personsList) {
+      person.isVoting = 1;
       if (person.isVoting == 1) {
         i++;
       }
@@ -132,7 +124,7 @@ class _PollPageState extends State<PollPage> {
                         child: TextButton(
                           onPressed: () async {
                             int num = 0;
-                            for(Person p in personsList) {
+                            for (Person p in personsList) {
                               if (p.isVoting == 1) {
                                 num++;
                               }
@@ -140,20 +132,18 @@ class _PollPageState extends State<PollPage> {
                             if (num > 0) {
                               setState(() => isLoading = true);
                               bool updated = await updatePersons();
-                              if (updated) {
-                                bool havePoll = await insertUpdatePoll();
-                                if (havePoll) {
-                                  Navigator.pushNamed(context, VotePage.id);
-                                }
-                              }
                               setState(() => isLoading = false);
+                              if (updated) {
+                                await insertUpdatePoll();
+                              }
                             } else {
                               return showDialog(
                                 context: context,
                                 builder: (context) {
                                   return const CustomAlertDialog(
                                     title: 'Atenção!',
-                                    content: 'Não é possível iniciar uma votação \nsem pessoas para votar.',
+                                    content:
+                                        'Não é possível iniciar uma votação \nsem pessoas para votar.',
                                   );
                                 },
                               );
@@ -245,20 +235,64 @@ class _PollPageState extends State<PollPage> {
     }
   }
 
-  Future insertUpdatePoll() async {
-    try {
-      int currentYear = DateTime.now().year;
+  Future<void> insertUpdatePoll() async {
+    int currentYear = DateTime.now().year;
 
-      Poll? pollExists = await PollRepository.readActiveByYear(currentYear);
-      if (pollExists == null) {
-        final poll = Poll(
-          numPersons: numPersons,
-          presidentId: 0,
-          treasurerId: 0,
-          year: currentYear,
-          active: 1,
-        );
-        currentPoll = await PollRepository.insert(poll);
+    Poll? pollExists = await PollRepository.readByYear(currentYear);
+    if (pollExists == null) {
+      final poll = Poll(
+        numPersons: numPersons,
+        presidentId: 0,
+        treasurerId: 0,
+        year: currentYear,
+        active: 1,
+      );
+      currentPoll = await PollRepository.insert(poll);
+      Navigator.pushNamed(context, VotePage.id);
+    } else {
+      if (pollExists.active == 0) {
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(20.0),
+                ),
+              ),
+              title: const Text('Atenção!'),
+              content: const Text(
+                  'Já foi feita uma votação para este ano. Tem \na certeza que quer apagá-la e fazer uma nova?'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    bool value = false;
+                    Navigator.pop(context, value);
+                  },
+                  child: const Text('Não'),
+                ),
+                TextButton(
+                  onPressed: () async {
+                    await VoteRepository.deleteByPoll(pollExists.id ?? 0);
+                    await PollRepository.deleteById(pollExists.id ?? 0);
+
+                    final poll = Poll(
+                      numPersons: numPersons,
+                      presidentId: 0,
+                      treasurerId: 0,
+                      year: currentYear,
+                      active: 1,
+                    );
+                    currentPoll = await PollRepository.insert(poll);
+                    bool value = true;
+                    Navigator.pop(context, value);
+                  },
+                  child: const Text('Sim'),
+                ),
+              ],
+            );
+          },
+        ).then((value) => Navigator.pushNamed(context, VotePage.id));
       } else {
         final pollUpdated = pollExists.copy(
           numPersons: numPersons,
@@ -266,10 +300,8 @@ class _PollPageState extends State<PollPage> {
           treasurerId: 0,
         );
         currentPoll = await PollRepository.update(pollUpdated);
+        Navigator.pushNamed(context, VotePage.id);
       }
-      return true;
-    } catch (e) {
-      return false;
     }
   }
 

@@ -22,16 +22,14 @@ class PollRepository {
   }
 
   // Método que devolve a votação ativa por ano
-  static Future<Poll?> readActiveByYear(int year) async {
+  static Future<Poll?> readByYear(int year) async {
     final db = await ABComeDatabase.instance.database;
-
-    int active = 1;
 
     final maps = await db!.query(
       tablePolls,
       columns: PollFields.values,
-      where: '${PollFields.year} = ? AND ${PollFields.active} = ?',
-      whereArgs: [year, active],
+      where: '${PollFields.year} = ?',
+      whereArgs: [year],
     );
 
     if (maps.isNotEmpty) {
