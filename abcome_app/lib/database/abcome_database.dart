@@ -125,7 +125,7 @@ class ABComeDatabase {
       image: '',
       wasPresident: 1,
       wasTreasurer: 0,
-      isVoting: 1,
+      isVoting: 0,
       inactive: 0, // False
     );
     await db.insert(tablePersons, defaultPresident.toJson());
@@ -136,7 +136,7 @@ class ABComeDatabase {
       image: '',
       wasPresident: 0,
       wasTreasurer: 1,
-      isVoting: 1,
+      isVoting: 0,
       inactive: 0, // False
     );
     await db.insert(tablePersons, defaultTreasurer.toJson());

@@ -138,7 +138,7 @@ class _MemberDetailsPageState extends State<MemberDetailsPage> {
                           ),
                         ),
                       ),
-                      Container(
+                      SizedBox(
                         width: MediaQuery.of(context).size.width * 0.25,
                         child: CheckboxListTile(
                           activeColor: kPrimaryColor,
@@ -154,7 +154,7 @@ class _MemberDetailsPageState extends State<MemberDetailsPage> {
                           },
                         ),
                       ),
-                      Container(
+                      SizedBox(
                         width: MediaQuery.of(context).size.width * 0.25,
                         child: CheckboxListTile(
                           activeColor: kPrimaryColor,
@@ -211,7 +211,7 @@ class _MemberDetailsPageState extends State<MemberDetailsPage> {
         image: imagePath,
         wasPresident: wasPresident ? 1 : 0,
         wasTreasurer: wasTreasurer ? 1 : 0,
-        isVoting: 1, // True
+        isVoting: 0, // True
         inactive: 0, // False
       );
 

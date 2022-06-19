@@ -50,8 +50,6 @@ class PersonRepository {
     const orderByName = '${PersonFields.name} ASC';
     int inactive = 0;
 
-    // Ambas as propriedades result fazem a mesma coisa (a primeira permite usar sql puro)
-    //final result = await db!.rawQuery('SELECT * FROM $tablePersons ORDER BY $orderByName');
     final result = await db!.query(
       tablePersons,
       columns: PersonFields.values,
@@ -102,6 +100,20 @@ class PersonRepository {
       person.toJson(),
       where: '${PersonFields.id} = ?',
       whereArgs: [person.id],
+    );
+  }
+
+  // Método o campo que permite votar para todas as Pessoas ativas
+  static Future<int> updateVotingField() async {
+    final db = await ABComeDatabase.instance.database;
+
+    int isVoting = 0;
+    int inactive = 0;
+
+    return db!.rawUpdate(''
+        'UPDATE $tablePersons '
+        'SET ${PersonFields.isVoting} = $isVoting '
+        'WHERE ${PersonFields.inactive} = $inactive'
     );
   }
 

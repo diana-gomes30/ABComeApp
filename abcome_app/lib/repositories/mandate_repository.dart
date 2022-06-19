@@ -41,41 +41,6 @@ class MandateRepository {
     }
   }
 
-  // Método que devolve um Mandato pelo Ano
-  static Future<Mandate?> readByYear(int year) async {
-    final db = await ABComeDatabase.instance.database;
-
-    final maps = await db!.query(
-      tableMandates,
-      columns: MandateFields.values,
-      //where: '${MandateFields.yearIni} = ?',
-      //whereArgs: [year],
-    );
-
-    if (maps.isNotEmpty) {
-      return Mandate.fromJson(maps.first);
-    } else {
-      return null;
-    }
-  }
-
-  // Método que devolve o último Mandato
-  static Future<Mandate?> readLast() async {
-    final db = await ABComeDatabase.instance.database;
-
-    final maps = await db!.query(
-      tableMandates,
-      columns: MandateFields.values,
-      //orderBy: '${MandateFields.yearIni} DESC'
-    );
-
-    if (maps.isNotEmpty) {
-      return Mandate.fromJson(maps.first);
-    } else {
-      return null;
-    }
-  }
-
   // Método que devolve todos os mandatos
   static Future<List<Mandate>> readAll() async {
     final db = await ABComeDatabase.instance.database;

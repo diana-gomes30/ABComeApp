@@ -1,16 +1,15 @@
 import 'package:abcome_app/models/person.dart';
 import 'package:abcome_app/models/poll.dart';
-import 'package:abcome_app/models/statistic.dart';
 import 'package:abcome_app/models/vote.dart';
 import 'package:abcome_app/repositories/person_repository.dart';
 import 'package:abcome_app/repositories/poll_repository.dart';
 import 'package:abcome_app/repositories/vote_repository.dart';
-import 'package:abcome_app/screens/voting/vote_page.dart';
+import 'package:abcome_app/screens/poll/vote_page.dart';
 import 'package:abcome_app/utils/constants.dart';
 import 'package:abcome_app/utils/utils.dart';
+import 'package:abcome_app/widgets/custom_alert_dialog.dart';
 import 'package:abcome_app/widgets/my_app_bar.dart';
 import 'package:abcome_app/widgets/my_app_drawer.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class PollPage extends StatefulWidget {
@@ -33,8 +32,17 @@ class _PollPageState extends State<PollPage> {
   void initState() {
     super.initState();
 
+    //getActivePoll();
     getPersons();
   }
+
+  /*Future<void> getActivePoll() async {
+    setState(() => isLoading = true);
+
+    Poll? activePoll = await PollRepository.readCurrentPoll();
+
+    setState(() => isLoading = false);
+  }*/
 
   Future<void> getPersons() async {
     setState(() => isLoading = true);
@@ -123,24 +131,33 @@ class _PollPageState extends State<PollPage> {
                         ),
                         child: TextButton(
                           onPressed: () async {
-                            setState(() {
-                              isLoading = true;
-                            });
-
-                            bool updated = await updatePersons();
-                            if (updated) {
-                              bool havePoll = await insertUpdatePoll();
-                              if (havePoll) {
-                                bool inserted = await insertVotes();
-                                if (inserted) {
+                            int num = 0;
+                            for(Person p in personsList) {
+                              if (p.isVoting == 1) {
+                                num++;
+                              }
+                            }
+                            if (num > 0) {
+                              setState(() => isLoading = true);
+                              bool updated = await updatePersons();
+                              if (updated) {
+                                bool havePoll = await insertUpdatePoll();
+                                if (havePoll) {
                                   Navigator.pushNamed(context, VotePage.id);
                                 }
                               }
+                              setState(() => isLoading = false);
+                            } else {
+                              return showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return const CustomAlertDialog(
+                                    title: 'Atenção!',
+                                    content: 'Não é possível iniciar uma votação \nsem pessoas para votar.',
+                                  );
+                                },
+                              );
                             }
-
-                            setState(() {
-                              isLoading = false;
-                            });
                           },
                           child: const Text(
                             'Iniciar Votação',
@@ -231,7 +248,6 @@ class _PollPageState extends State<PollPage> {
   Future insertUpdatePoll() async {
     try {
       int currentYear = DateTime.now().year;
-      print('Ano atual: $currentYear');
 
       Poll? pollExists = await PollRepository.readActiveByYear(currentYear);
       if (pollExists == null) {
@@ -247,6 +263,8 @@ class _PollPageState extends State<PollPage> {
       } else {
         final pollUpdated = pollExists.copy(
           numPersons: numPersons,
+          presidentId: 0,
+          treasurerId: 0,
         );
         currentPoll = await PollRepository.update(pollUpdated);
       }

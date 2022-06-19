@@ -37,34 +37,18 @@ class _SettingsPageState extends State<SettingsPage> {
     refreshData();
   }
 
-  /*int getCurrentYear() {
-    int currentYear = DateTime.now().year;
-    print('Ano: $currentYear');
-
-    return currentYear;
-  }*/
-
-  // Função que vai buscar o últímo mandato. Se não existir, então vai buscar o mandato por defeito e de seguida vai buscar o presidente e o tesoureiro
   Future<void> refreshData() async {
     setState(() => isLoading = true);
 
-    final mandate = await MandateRepository.readLast();
-    if (mandate == null) {
-      currentMandate = await MandateRepository.readActive();
-    } else {
-      currentMandate = mandate;
+    currentMandate = await MandateRepository.readActive();
+
+    if (currentMandate != null) {
+      currentPoll = await PollRepository.readById(currentMandate!.pollId);
+      currentPresident =
+          await PersonRepository.readById(currentMandate!.presidentId);
+      currentTreasurer =
+          await PersonRepository.readById(currentMandate!.treasurerId);
     }
-
-    currentPoll = await PollRepository.readById(
-      currentMandate != null ? currentMandate!.pollId : 1,
-    );
-
-    currentPresident = await PersonRepository.readById(
-      currentMandate != null ? currentMandate!.presidentId : 1,
-    );
-    currentTreasurer = await PersonRepository.readById(
-      currentMandate != null ? currentMandate!.treasurerId : 2,
-    );
 
     setState(() => isLoading = false);
   }

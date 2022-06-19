@@ -21,11 +21,61 @@ class VoteRepository {
     }
   }
 
+  // Método que devolve todos os votos
+  static Future<List<Vote>> readAll() async {
+    final db = await ABComeDatabase.instance.database;
+
+    final result = await db!.query(
+      tableVotes,
+      orderBy: '${VoteFields.id} ASC',
+    );
+
+    return result.map((json) => Vote.fromJson(json)).toList();
+  }
+
+  // Método que devolve todos os votos por votação
+  static Future<List<Vote>> readAllByPoll(int idPoll) async {
+    final db = await ABComeDatabase.instance.database;
+
+    final result = await db!.query(
+      tableVotes,
+      where: '${VoteFields.pollId} = ?',
+      whereArgs: [idPoll],
+      orderBy: '${VoteFields.pollId}, ${VoteFields.personId} ASC',
+    );
+
+    return result.map((json) => Vote.fromJson(json)).toList();
+  }
+
   // Método que cria um voto
   static Future<Vote> insert(Vote vote) async {
     final db = await ABComeDatabase.instance.database;
 
     final id = await db!.insert(tableVotes, vote.toJson());
     return vote.copy(id: id);
+  }
+
+  // Método que atualiza um voto existente
+  static Future<Vote> update(Vote vote) async {
+    final db = await ABComeDatabase.instance.database;
+
+    await db!.update(
+      tableVotes,
+      vote.toJson(),
+      where: '${VoteFields.id} = ?',
+      whereArgs: [vote.id],
+    );
+
+    return vote.copy(id: vote.id);
+  }
+
+  static Future<void> deleteByPoll(int idPoll) async {
+    final db = await ABComeDatabase.instance.database;
+
+    await db!.delete(
+      tableVotes,
+      where: '${VoteFields.pollId} = ?',
+      whereArgs: [idPoll],
+    );
   }
 }

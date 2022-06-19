@@ -75,7 +75,7 @@ class _MembersPageState extends State<MembersPage> {
                   title: const Center(
                     child: Text('Aviso!'),
                   ),
-                  content: Container(
+                  content: SizedBox(
                     /*decoration: const BoxDecoration(
                       borderRadius: BorderRadius.all(
                         Radius.circular(50.0),

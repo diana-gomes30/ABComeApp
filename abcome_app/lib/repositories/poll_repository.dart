@@ -64,6 +64,18 @@ class PollRepository {
     }
   }
 
+  // Método que devolve todas as votações
+  static Future<List<Poll>> readAll() async {
+    final db = await ABComeDatabase.instance.database;
+
+    final result = await db!.query(
+        tablePolls,
+        orderBy: '${PollFields.id} ASC',
+    );
+
+    return result.map((json) => Poll.fromJson(json)).toList();
+  }
+
   // Método que cria uma votação
   static Future<Poll> insert(Poll poll) async {
     final db = await ABComeDatabase.instance.database;
@@ -84,5 +96,15 @@ class PollRepository {
     );
 
     return poll.copy(id: poll.id);
+  }
+
+  static Future<void> deleteById(int id) async {
+    final db = await ABComeDatabase.instance.database;
+
+    await db!.delete(
+      tablePolls,
+      where: '${PollFields.id} = ?',
+      whereArgs: [id],
+    );
   }
 }

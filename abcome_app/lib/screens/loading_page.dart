@@ -24,7 +24,7 @@ class _LoadingPageState extends State<LoadingPage> {
             image: AssetImage(kLogoImagePath),
           ),
           splashIconSize: 300,
-          nextScreen: HomePage(),
+          nextScreen: const HomePage(),
           splashTransition: SplashTransition.fadeTransition,
           pageTransitionType: PageTransitionType.fade,
           backgroundColor: kPrimaryColor,
