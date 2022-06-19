@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:abcome_app/models/person.dart';
 import 'package:abcome_app/models/poll.dart';
 import 'package:abcome_app/models/vote.dart';
@@ -340,7 +342,15 @@ class _VotePageState extends State<VotePage> {
                                                 _presidentController.text = '';
                                                 _treasurerController.text = '';
                                                 setState( () => isLoading = false);
-                                                Navigator.pop(context);
+
+                                                if(personsList.isEmpty) {
+                                                  setState( () => isLoading = true);
+                                                  await closePoll();
+                                                  Navigator.pushReplacementNamed(context, HomePage.id);
+                                                  setState( () => isLoading = false);
+                                                } else {
+                                                  Navigator.pop(context);
+                                                }
                                               },
                                               child: const Text('Sim'),
                                             ),
@@ -544,5 +554,13 @@ class _VotePageState extends State<VotePage> {
     );
 
     await PersonRepository.update(personUpdated);
+  }
+
+  Future<void> closePoll() async {
+    final pollUpdated = currentPoll!.copy(
+      active: 0,
+    );
+
+    await PollRepository.update(pollUpdated);
   }
 }
