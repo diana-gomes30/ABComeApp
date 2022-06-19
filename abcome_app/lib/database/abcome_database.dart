@@ -71,8 +71,7 @@ class ABComeDatabase {
     ${PollFields.year} $intType,
     ${PollFields.presidentId} $intType,
     ${PollFields.treasurerId} $intType,
-    ${PollFields.active} $boolType,
-    ${PollFields.cancelled} $boolType
+    ${PollFields.active} $boolType
     )''');
 
     // Create Table Votes
@@ -149,7 +148,6 @@ class ABComeDatabase {
       presidentId: defaultPresident.id ?? 1,
       treasurerId: defaultTreasurer.id ?? 2,
       active: 0, // False
-      cancelled: 0, // False
     );
     await db.insert(tablePolls, defaultPoll.toJson());
 

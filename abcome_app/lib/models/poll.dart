@@ -2,7 +2,7 @@ const String tablePolls = 'polls';
 
 class PollFields {
   static final List<String> values = [
-    id, numPersons, year, presidentId, treasurerId, active, cancelled
+    id, numPersons, year, presidentId, treasurerId, active
   ];
 
   static const String id = '_id';
@@ -11,7 +11,6 @@ class PollFields {
   static const String presidentId = 'president_id';
   static const String treasurerId = 'treasurer_id';
   static const String active = 'active';
-  static const String cancelled = 'cancelled';
 }
 
 class Poll {
@@ -21,7 +20,6 @@ class Poll {
   int presidentId;
   int treasurerId;
   int active;
-  int cancelled;
 
   Poll({
     this.id,
@@ -30,7 +28,6 @@ class Poll {
     required this.presidentId,
     required this.treasurerId,
     required this.active,
-    required this.cancelled,
   });
 
   Map<String, Object?> toJson() => {
@@ -40,7 +37,6 @@ class Poll {
     PollFields.presidentId: presidentId,
     PollFields.treasurerId: treasurerId,
     PollFields.active: active,
-    PollFields.cancelled: cancelled,
   };
 
   static Poll fromJson(Map<String, Object?> json) => Poll(
@@ -50,7 +46,6 @@ class Poll {
     presidentId: json[PollFields.presidentId] as int,
     treasurerId: json[PollFields.treasurerId] as int,
     active: json[PollFields.active] as int,
-    cancelled: json[PollFields.cancelled] as int,
   );
 
   Poll copy({
@@ -68,6 +63,5 @@ class Poll {
     presidentId: presidentId ?? this.presidentId,
     treasurerId: treasurerId ?? this.treasurerId,
     active: active ?? this.active,
-    cancelled: cancelled ?? this.cancelled,
   );
 }

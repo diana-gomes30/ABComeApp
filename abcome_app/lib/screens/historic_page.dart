@@ -46,7 +46,7 @@ class _HistoricPageState extends State<HistoricPage> {
                 itemBuilder: (context, index) {
                   return ListTile(
                     title: Text(
-                        'IdPoll: ${pollList[index].id} || NumPersons: ${pollList[index].numPersons} || Year: ${pollList[index].year} || President: ${pollList[index].presidentId} || Treasurer: ${pollList[index].treasurerId} || Active: ${pollList[index].active} || Cancel: ${pollList[index].cancelled}'),
+                        'IdPoll: ${pollList[index].id} || NumPersons: ${pollList[index].numPersons} || Year: ${pollList[index].year} || President: ${pollList[index].presidentId} || Treasurer: ${pollList[index].treasurerId} || Active: ${pollList[index].active}'),
                   );
                 },
               ),

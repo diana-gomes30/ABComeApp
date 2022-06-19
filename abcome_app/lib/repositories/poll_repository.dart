@@ -26,13 +26,12 @@ class PollRepository {
     final db = await ABComeDatabase.instance.database;
 
     int active = 1;
-    int cancelled = 0;
 
     final maps = await db!.query(
       tablePolls,
       columns: PollFields.values,
-      where: '${PollFields.year} = ? AND ${PollFields.active} = ? AND ${PollFields.cancelled} = ?',
-      whereArgs: [year, active, cancelled],
+      where: '${PollFields.year} = ? AND ${PollFields.active} = ?',
+      whereArgs: [year, active],
     );
 
     if (maps.isNotEmpty) {
@@ -48,13 +47,12 @@ class PollRepository {
 
     int currentYear = DateTime.now().year;
     int active = 1;
-    int cancelled = 0;
 
     final maps = await db!.query(
       tablePolls,
       columns: PollFields.values,
-      where: '${PollFields.year} = ? AND ${PollFields.active} = ? AND ${PollFields.cancelled} = ?',
-      whereArgs: [currentYear, active, cancelled],
+      where: '${PollFields.year} = ? AND ${PollFields.active} = ?',
+      whereArgs: [currentYear, active],
     );
 
     if (maps.isNotEmpty) {

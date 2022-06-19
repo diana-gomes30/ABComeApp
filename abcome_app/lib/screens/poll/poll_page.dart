@@ -257,7 +257,6 @@ class _PollPageState extends State<PollPage> {
           treasurerId: 0,
           year: currentYear,
           active: 1,
-          cancelled: 0,
         );
         currentPoll = await PollRepository.insert(poll);
       } else {
