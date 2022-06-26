@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:abcome_app/models/person.dart';
 import 'package:abcome_app/models/poll.dart';
-import 'package:abcome_app/models/vote.dart';
+import 'package:abcome_app/models/statistic.dart';
 import 'package:abcome_app/repositories/person_repository.dart';
 import 'package:abcome_app/repositories/poll_repository.dart';
-import 'package:abcome_app/repositories/vote_repository.dart';
+import 'package:abcome_app/repositories/statistic_repository.dart';
 import 'package:abcome_app/screens/home_page.dart';
 import 'package:abcome_app/utils/constants.dart';
 import 'package:abcome_app/widgets/custom_alert_dialog.dart';
@@ -335,19 +335,24 @@ class _VotePageState extends State<VotePage> {
                                               onPressed: () async {
                                                 setState(
                                                     () => isLoading = true);
-                                                await insertVote();
+                                                await insertUpdateStatistic();
                                                 await updatePerson();
                                                 await getData();
                                                 _personController.text = '';
                                                 _presidentController.text = '';
                                                 _treasurerController.text = '';
-                                                setState( () => isLoading = false);
+                                                setState(
+                                                    () => isLoading = false);
 
-                                                if(personsList.isEmpty) {
-                                                  setState( () => isLoading = true);
+                                                if (personsList.isEmpty) {
+                                                  setState(
+                                                      () => isLoading = true);
                                                   await closePoll();
-                                                  Navigator.pushReplacementNamed(context, HomePage.id);
-                                                  setState( () => isLoading = false);
+                                                  Navigator
+                                                      .pushReplacementNamed(
+                                                          context, HomePage.id);
+                                                  setState(
+                                                      () => isLoading = false);
                                                 } else {
                                                   Navigator.pop(context);
                                                 }
@@ -433,7 +438,7 @@ class _VotePageState extends State<VotePage> {
                                     TextButton(
                                       onPressed: () async {
                                         setState(() => isLoading = true);
-                                        await VoteRepository.deleteByPoll(
+                                        await StatisticRepository.deleteByPoll(
                                             currentPoll!.id ?? 0);
                                         await PollRepository.deleteById(
                                             currentPoll!.id ?? 0);
@@ -537,7 +542,7 @@ class _VotePageState extends State<VotePage> {
         },
       );
 
-  Future<void> insertVote() async {
+  /*Future<void> insertVote() async {
     final vote = Vote(
       personId: person.id ?? 0,
       pollId: currentPoll!.id ?? 0,
@@ -546,6 +551,52 @@ class _VotePageState extends State<VotePage> {
     );
 
     await VoteRepository.insert(vote);
+  }*/
+
+  Future<void> insertUpdateStatistic() async {
+    // Verifica se já existe um registo para o ID do presidente, se sim, atualiza numVotos se não cria um registo novo
+    Statistic? statisticPresidentExists = await StatisticRepository.readByPersonPoll(
+        president.id ?? 0, currentPoll!.id ?? 0);
+
+    if (statisticPresidentExists == null) {
+      final statisticPresident = Statistic(
+          personId:  president.id ?? 0,
+          pollId: currentPoll!.id ?? 0,
+          presidentNumVotes: 1,
+          treasurerNumVotes: 0,
+      );
+
+      await StatisticRepository.insert(statisticPresident);
+    } else {
+      int numVotes = statisticPresidentExists.presidentNumVotes + 1;
+      final statisticPresident = statisticPresidentExists.copy(
+        presidentNumVotes: numVotes,
+      );
+
+      await StatisticRepository.update(statisticPresident);
+    }
+
+    // Verifica se já existe um registo para o ID do tesoureiro, se sim, atualiza numVotos se não cria um registo novo
+    Statistic? statisticTreasurerExists = await StatisticRepository.readByPersonPoll(
+        treasurer.id ?? 0, currentPoll!.id ?? 0);
+
+    if (statisticTreasurerExists == null) {
+      final statisticTreasurer = Statistic(
+        personId:  treasurer.id ?? 0,
+        pollId: currentPoll!.id ?? 0,
+        presidentNumVotes: 0,
+        treasurerNumVotes: 1,
+      );
+
+      await StatisticRepository.insert(statisticTreasurer);
+    } else {
+      int numVotes = statisticTreasurerExists.treasurerNumVotes + 1;
+      final statisticTreasurer = statisticTreasurerExists.copy(
+        treasurerNumVotes: numVotes,
+      );
+
+      await StatisticRepository.update(statisticTreasurer);
+    }
   }
 
   Future<void> updatePerson() async {

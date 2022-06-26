@@ -1,7 +1,6 @@
 import 'package:abcome_app/models/person.dart';
 import 'package:abcome_app/models/poll.dart';
 import 'package:abcome_app/models/statistic.dart';
-import 'package:abcome_app/models/vote.dart';
 import 'package:abcome_app/models/mandate.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
@@ -74,25 +73,11 @@ class ABComeDatabase {
     ${PollFields.active} $boolType
     )''');
 
-    // Create Table Votes
-    await db.execute('''
-    CREATE TABLE $tableVotes (
-    ${VoteFields.id} $idType,
-    ${VoteFields.personId} $intType,
-    ${VoteFields.pollId} $intType,
-    ${VoteFields.presidentId} $intType,
-    ${VoteFields.treasurerId} $intType,
-    CONSTRAINT fk_poll FOREIGN KEY (${VoteFields.pollId}) REFERENCES $tablePolls(${PollFields.id}),
-    CONSTRAINT fk_president FOREIGN KEY (${VoteFields.presidentId}) REFERENCES $tablePersons(${PersonFields.id}),
-    CONSTRAINT fk_treasurer FOREIGN KEY (${VoteFields.treasurerId}) REFERENCES $tablePersons(${PersonFields.id})
-    )''');
-
     // Create Table Statistics
     await db.execute('''
     CREATE TABLE $tableStatistics (
     ${StatisticFields.id} $idType,
     ${StatisticFields.personId} $intType,
-    ${StatisticFields.year} $intType,
     ${StatisticFields.pollId} $intType,
     ${StatisticFields.presidentNumVotes} $intType,
     ${StatisticFields.treasurerNumVotes} $intType,

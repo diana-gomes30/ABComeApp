@@ -1,9 +1,8 @@
 import 'package:abcome_app/models/person.dart';
 import 'package:abcome_app/models/poll.dart';
-import 'package:abcome_app/models/vote.dart';
 import 'package:abcome_app/repositories/person_repository.dart';
 import 'package:abcome_app/repositories/poll_repository.dart';
-import 'package:abcome_app/repositories/vote_repository.dart';
+import 'package:abcome_app/repositories/statistic_repository.dart';
 import 'package:abcome_app/screens/poll/vote_page.dart';
 import 'package:abcome_app/utils/constants.dart';
 import 'package:abcome_app/utils/utils.dart';
@@ -248,7 +247,7 @@ class _PollPageState extends State<PollPage> {
         active: 1,
       );
       currentPoll = await PollRepository.insert(poll);
-      Navigator.pushNamed(context, VotePage.id);
+      Navigator.pushReplacementNamed(context, VotePage.id);
     } else {
       if (pollExists.active == 0) {
         showDialog(
@@ -273,7 +272,7 @@ class _PollPageState extends State<PollPage> {
                 ),
                 TextButton(
                   onPressed: () async {
-                    await VoteRepository.deleteByPoll(pollExists.id ?? 0);
+                    await StatisticRepository.deleteByPoll(pollExists.id ?? 0);
                     await PollRepository.deleteById(pollExists.id ?? 0);
 
                     final poll = Poll(
@@ -292,7 +291,11 @@ class _PollPageState extends State<PollPage> {
               ],
             );
           },
-        ).then((value) => Navigator.pushNamed(context, VotePage.id));
+        ).then((value) {
+          if(value) {
+            Navigator.pushNamed(context, VotePage.id);
+          }
+        });
       } else {
         final pollUpdated = pollExists.copy(
           numPersons: numPersons,
@@ -302,31 +305,6 @@ class _PollPageState extends State<PollPage> {
         currentPoll = await PollRepository.update(pollUpdated);
         Navigator.pushNamed(context, VotePage.id);
       }
-    }
-  }
-
-  Future<bool> insertVotes() async {
-    try {
-      for (Person person in personsList) {
-        if (person.id != null && currentPoll.id != null) {
-          Vote? voteExists = await VoteRepository.readByPersonPoll(
-            person.id!,
-            currentPoll.id!,
-          );
-          if (voteExists == null) {
-            final vote = Vote(
-              personId: person.id!,
-              pollId: currentPoll.id!,
-              presidentId: 0,
-              treasurerId: 0,
-            );
-            await VoteRepository.insert(vote);
-          }
-        }
-      }
-      return true;
-    } catch (e) {
-      return false;
     }
   }
 }
