@@ -87,7 +87,7 @@ class _MyAppDrawerState extends State<MyAppDrawer> {
                         onTap: () async {
                           setState(() => isLoading = true);
                           Poll? activePoll =
-                              await PollRepository.readCurrentPoll();
+                              await PollRepository.readActivePoll();
                           setState(() => isLoading = false);
                           if (activePoll == null) {
                             Navigator.pushReplacementNamed(

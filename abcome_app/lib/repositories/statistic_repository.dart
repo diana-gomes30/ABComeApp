@@ -21,22 +21,40 @@ class StatisticRepository {
     }
   }
 
-  // Método que devolve a estatística por pessoa e votação
-  static Future<Statistic?> readPresidentByPoll(int idPoll) async {
+  // Método que devolve a estatística por pessoa e votação para presidente
+  static Future<List<Statistic>> readPresidentByPoll(int idPoll) async {
     final db = await ABComeDatabase.instance.database;
 
-    final maps = await db!.query(
+    const orderByVotes = '${StatisticFields.presidentNumVotes} DESC';
+    int numVotes = 0;
+
+    final result = await db!.query(
       tableStatistics,
       columns: StatisticFields.values,
-      where: '${StatisticFields.pollId} = ?',
-      whereArgs: [idPoll],
+      where: '${StatisticFields.pollId} = ? AND ${StatisticFields.presidentNumVotes} > ?',
+      whereArgs: [idPoll, numVotes],
+      orderBy: orderByVotes,
     );
 
-    if (maps.isNotEmpty) {
-      return Statistic.fromJson(maps.first);
-    } else {
-      return null;
-    }
+    return result.map((json) => Statistic.fromJson(json)).toList();
+  }
+
+  // Método que devolve a estatística por pessoa e votação para tesoureiro
+  static Future<List<Statistic>> readTreasurerByPoll(int idPoll) async {
+    final db = await ABComeDatabase.instance.database;
+
+    const orderByVotes = '${StatisticFields.treasurerNumVotes} DESC';
+    int numVotes = 0;
+
+    final result = await db!.query(
+      tableStatistics,
+      columns: StatisticFields.values,
+      where: '${StatisticFields.pollId} = ? AND ${StatisticFields.treasurerNumVotes} > ?',
+      whereArgs: [idPoll, numVotes],
+      orderBy: orderByVotes,
+    );
+
+    return result.map((json) => Statistic.fromJson(json)).toList();
   }
 
   // Método que devolve todas as estatísticas

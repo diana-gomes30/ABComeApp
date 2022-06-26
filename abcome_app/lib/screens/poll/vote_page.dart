@@ -60,7 +60,7 @@ class _VotePageState extends State<VotePage> {
   Future<void> getCurrentPoll() async {
     setState(() => isLoading = true);
 
-    currentPoll = (await PollRepository.readCurrentPoll())!;
+    currentPoll = (await PollRepository.readActivePoll())!;
 
     setState(() => isLoading = false);
   }

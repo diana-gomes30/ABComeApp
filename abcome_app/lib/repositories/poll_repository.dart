@@ -21,6 +21,25 @@ class PollRepository {
     }
   }
 
+  // Método que devolve a ultima votação
+  static Future<Poll?> readLast() async {
+    final db = await ABComeDatabase.instance.database;
+
+    const orderByVotes = '${PollFields.year} DESC';
+
+    final maps = await db!.query(
+      tablePolls,
+      columns: PollFields.values,
+      orderBy: orderByVotes,
+    );
+
+    if (maps.isNotEmpty) {
+      return Poll.fromJson(maps.first);
+    } else {
+      return null;
+    }
+  }
+
   // Método que devolve a votação ativa por ano
   static Future<Poll?> readByYear(int year) async {
     final db = await ABComeDatabase.instance.database;
@@ -40,7 +59,7 @@ class PollRepository {
   }
 
   // Método que devolve a votação em andamento
-  static Future<Poll?> readCurrentPoll() async {
+  static Future<Poll?> readActivePoll() async {
     final db = await ABComeDatabase.instance.database;
 
     int currentYear = DateTime.now().year;

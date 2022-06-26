@@ -8,6 +8,7 @@ import 'package:abcome_app/screens/poll/vote_page.dart';
 import 'package:abcome_app/screens/results_page.dart';
 import 'package:abcome_app/screens/settings_page.dart';
 import 'package:abcome_app/utils/constants.dart';
+import 'package:abcome_app/utils/lifecycle_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 
@@ -23,25 +24,28 @@ class MyApp extends StatelessWidget {
     // Para evitar o delay ao carregar a imagem de fundo
     precacheImage(const AssetImage(kBackgroundImagePath), context);
 
-    return GlobalLoaderOverlay(
-      child: MaterialApp(
-        title: 'A.B.Come',
-        theme: ThemeData(
-          primaryColor: Colors.black,
-          backgroundColor: Colors.white,
+    return LifeCycleManager(
+      child: GlobalLoaderOverlay(
+        child: MaterialApp(
+          title: 'A.B.Come',
+          theme: ThemeData(
+            primaryColor: Colors.black,
+            backgroundColor: Colors.white,
+          ),
+          debugShowCheckedModeBanner: false,
+          initialRoute: LoadingPage.id,
+          routes: {
+            LoadingPage.id: (context) => const LoadingPage(),
+            HomePage.id: (context) => const HomePage(),
+            PollPage.id: (context) => const PollPage(),
+            VotePage.id: (context) => const VotePage(),
+            MembersPage.id: (context) => const MembersPage(),
+            MemberDetailsPage.id: (context) => const MemberDetailsPage(),
+            ResultsPage.id: (context) => const ResultsPage(),
+            HistoricPage.id: (context) => const HistoricPage(),
+            SettingsPage.id: (context) => const SettingsPage(),
+          },
         ),
-        initialRoute: LoadingPage.id,
-        routes: {
-          LoadingPage.id: (context) => const LoadingPage(),
-          HomePage.id: (context) => const HomePage(),
-          PollPage.id: (context) => const PollPage(),
-          VotePage.id: (context) => const VotePage(),
-          MembersPage.id: (context) => const MembersPage(),
-          MemberDetailsPage.id: (context) => const MemberDetailsPage(),
-          ResultsPage.id: (context) => const ResultsPage(),
-          HistoricPage.id: (context) => const HistoricPage(),
-          SettingsPage.id: (context) => const SettingsPage(),
-        },
       ),
     );
   }
