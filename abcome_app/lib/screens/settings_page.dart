@@ -41,6 +41,12 @@ class _SettingsPageState extends State<SettingsPage> {
     setState(() => isLoading = true);
 
     currentMandate = await MandateRepository.readActive();
+    if (currentMandate == null) {
+      print('AQUI');
+      currentMandate == await MandateRepository.readLast();
+    } else {
+      print('AQUI 2');
+    }
 
     if (currentMandate != null) {
       currentPoll = await PollRepository.readById(currentMandate!.pollId);

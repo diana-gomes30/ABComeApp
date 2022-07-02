@@ -4,7 +4,7 @@ import 'package:abcome_app/models/mandate.dart';
 class MandateRepository {
   // <---------------------------------> Métodos CRUD à tabela de Mandatos <--------------------------------->
 
-  // Método que devolve um Mandato por defeito
+  // Método que devolve o Mandato ativo
   static Future<Mandate?> readActive() async {
     final db = await ABComeDatabase.instance.database;
     const active = 1; // True
@@ -18,6 +18,28 @@ class MandateRepository {
 
     if (maps.isNotEmpty) {
       return Mandate.fromJson(maps.first);
+    } else {
+      return null;
+    }
+  }
+
+  // Método que devolve o último Mandato
+  static Future<Mandate?> readLast() async {
+    final db = await ABComeDatabase.instance.database;
+
+    const orderByPoll = '${MandateFields.pollId} DESC';
+
+    final maps = await db!.query(
+      tableMandates,
+      columns: MandateFields.values,
+      orderBy: orderByPoll,
+    );
+
+    List<Mandate> mandateList = maps.map((json) => Mandate.fromJson(json)).toList();
+    final mandate = mandateList[0].copy();
+
+    if (maps.isNotEmpty) {
+      return mandate;
     } else {
       return null;
     }
@@ -75,6 +97,18 @@ class MandateRepository {
     );
   }
 
+  // Método que fecha um mandato
+  static Future<int> close(Mandate mandate) async {
+    final db = await ABComeDatabase.instance.database;
+
+    return db!.update(
+      tableMandates,
+      mandate.toJson(),
+      where: '${MandateFields.id} = ?',
+      whereArgs: [mandate.id],
+    );
+  }
+
   // Método que apaga um mandato
   static Future<int> delete(int mandateId) async {
     final db = await ABComeDatabase.instance.database;
@@ -83,6 +117,17 @@ class MandateRepository {
       tableMandates,
       where: '${MandateFields.id} = ?',
       whereArgs: [mandateId],
+    );
+  }
+
+  // Método que apaga um mandato
+  static Future<int> deleteByPoll(int pollId) async {
+    final db = await ABComeDatabase.instance.database;
+
+    return db!.delete(
+      tableMandates,
+      where: '${MandateFields.pollId} = ?',
+      whereArgs: [pollId],
     );
   }
 }

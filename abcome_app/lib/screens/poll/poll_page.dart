@@ -1,5 +1,6 @@
 import 'package:abcome_app/models/person.dart';
 import 'package:abcome_app/models/poll.dart';
+import 'package:abcome_app/repositories/mandate_repository.dart';
 import 'package:abcome_app/repositories/person_repository.dart';
 import 'package:abcome_app/repositories/poll_repository.dart';
 import 'package:abcome_app/repositories/statistic_repository.dart';
@@ -272,6 +273,7 @@ class _PollPageState extends State<PollPage> {
                 ),
                 TextButton(
                   onPressed: () async {
+                    await MandateRepository.deleteByPoll(pollExists.id ?? 0);
                     await StatisticRepository.deleteByPoll(pollExists.id ?? 0);
                     await PollRepository.deleteById(pollExists.id ?? 0);
 
