@@ -1,8 +1,10 @@
 import 'dart:async';
 
+import 'package:abcome_app/models/mandate.dart';
 import 'package:abcome_app/models/person.dart';
 import 'package:abcome_app/models/poll.dart';
 import 'package:abcome_app/models/statistic.dart';
+import 'package:abcome_app/repositories/mandate_repository.dart';
 import 'package:abcome_app/repositories/person_repository.dart';
 import 'package:abcome_app/repositories/poll_repository.dart';
 import 'package:abcome_app/repositories/statistic_repository.dart';
@@ -348,6 +350,7 @@ class _VotePageState extends State<VotePage> {
                                                   setState(
                                                       () => isLoading = true);
                                                   await closePoll();
+                                                  await updateInsertMandate();
                                                   Navigator
                                                       .pushReplacementNamed(
                                                           context, HomePage.id);
@@ -438,6 +441,7 @@ class _VotePageState extends State<VotePage> {
                                     TextButton(
                                       onPressed: () async {
                                         setState(() => isLoading = true);
+                                        await MandateRepository.deleteByPoll(currentPoll!.id ?? 0);
                                         await StatisticRepository.deleteByPoll(
                                             currentPoll!.id ?? 0);
                                         await PollRepository.deleteById(
@@ -613,5 +617,32 @@ class _VotePageState extends State<VotePage> {
     );
 
     await PollRepository.update(pollUpdated);
+  }
+
+  Future<void> updateInsertMandate() async {
+    Mandate? mandateActive = await MandateRepository.readActive();
+    if (mandateActive != null) {
+      Mandate mandateClose = mandateActive.copy(
+        active: 0,
+      );
+
+      await MandateRepository.update(mandateClose);
+
+      List<Statistic?> statisticsPresident = await StatisticRepository.readPresidentByPoll(currentPoll!.id ?? 0);
+      int idPresident = statisticsPresident.first!.personId;
+
+      List<Statistic?> statisticsTreasurer = await StatisticRepository.readTreasurerByPoll(currentPoll!.id ?? 0);
+      int idTreasurer = statisticsTreasurer.first!.personId;
+
+      final Mandate mandateInserted = Mandate(
+          personLimit: mandateActive.personLimit,
+          presidentId: idPresident,
+          treasurerId: idTreasurer,
+          active: 1,
+          pollId: currentPoll!.id ?? 0,
+      )
+      ;
+      await MandateRepository.insert(mandateInserted);
+    }
   }
 }
