@@ -63,32 +63,34 @@ class _MemberDetailsPageState extends State<MemberDetailsPage> {
           isEditing ? await updatePerson() : await insertPerson();
         },
       ),
-      body: ResponsiveLayout(
-        mobileBody: MobileMemberDetailsPage(
-          imagePath: imagePath,
-          nameController: nameController,
-          wasPresident: wasPresident,
-          wasTreasurer: wasTreasurer,
-          onClickedImage: () async => await modalBottomSheet(),
-          onChangedPresident: (value) {
-            setState(() => wasPresident = value);
-          },
-          onChangedTreasurer: (value) {
-            setState(() => wasTreasurer = value);
-          },
-        ),
-        tabletBody: TabletMemberDetailsPage(
-          imagePath: imagePath,
-          nameController: nameController,
-          wasPresident: wasPresident,
-          wasTreasurer: wasTreasurer,
-          onClickedImage: () async => await modalBottomSheet(),
-          onChangedPresident: (value) {
-            setState(() => wasPresident = value);
-          },
-          onChangedTreasurer: (value) {
-            setState(() => wasTreasurer = value);
-          },
+      body: SafeArea(
+        child: ResponsiveLayout(
+          mobileBody: MobileMemberDetailsPage(
+            imagePath: imagePath,
+            nameController: nameController,
+            wasPresident: wasPresident,
+            wasTreasurer: wasTreasurer,
+            onClickedImage: () async => await modalBottomSheet(),
+            onChangedPresident: (value) {
+              setState(() => wasPresident = value);
+            },
+            onChangedTreasurer: (value) {
+              setState(() => wasTreasurer = value);
+            },
+          ),
+          tabletBody: TabletMemberDetailsPage(
+            imagePath: imagePath,
+            nameController: nameController,
+            wasPresident: wasPresident,
+            wasTreasurer: wasTreasurer,
+            onClickedImage: () async => await modalBottomSheet(),
+            onChangedPresident: (value) {
+              setState(() => wasPresident = value);
+            },
+            onChangedTreasurer: (value) {
+              setState(() => wasTreasurer = value);
+            },
+          ),
         ),
       ),
     );

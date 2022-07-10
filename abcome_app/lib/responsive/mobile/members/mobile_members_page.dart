@@ -15,30 +15,28 @@ class MobileMembersPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: GridView.builder(
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-        ),
-        itemCount: personList.length,
-        itemBuilder: (BuildContext context, int index) {
-          return ItemMembersListWidget(
-            isTablet: false,
-            person: personList[index],
-            onClicked: () {
-              final int? personId = personList[index].id;
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => MemberDetailsPage(
-                    personId: personId,
-                  ),
-                ),
-              ).whenComplete(updateState);
-            },
-          );
-        },
+    return GridView.builder(
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
       ),
+      itemCount: personList.length,
+      itemBuilder: (BuildContext context, int index) {
+        return ItemMembersListWidget(
+          isTablet: false,
+          person: personList[index],
+          onClicked: () {
+            final int? personId = personList[index].id;
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => MemberDetailsPage(
+                  personId: personId,
+                ),
+              ),
+            ).whenComplete(updateState);
+          },
+        );
+      },
     );
   }
 }

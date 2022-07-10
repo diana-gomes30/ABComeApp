@@ -98,16 +98,18 @@ class _MembersPageState extends State<MembersPage> {
           ? const Center(
               child: CircularProgressIndicator(),
             )
-          : ResponsiveLayout(
-              mobileBody: MobileMembersPage(
-                personList: personsList,
-                updateState: () => getData(),
+          : SafeArea(
+            child: ResponsiveLayout(
+                mobileBody: MobileMembersPage(
+                  personList: personsList,
+                  updateState: () => getData(),
+                ),
+                tabletBody: TabletMembersPage(
+                  personList: personsList,
+                  updateState: () => getData(),
+                ),
               ),
-              tabletBody: TabletMembersPage(
-                personList: personsList,
-                updateState: () => getData(),
-              ),
-            ),
+          ),
     );
   }
 }
