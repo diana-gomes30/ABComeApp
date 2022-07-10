@@ -8,10 +8,12 @@ class ItemMembersListWidget extends StatelessWidget {
     Key? key,
     required this.person,
     required this.onClicked,
+    required this.isTablet,
   }) : super(key: key);
 
   final Person person;
   final VoidCallback onClicked;
+  final bool isTablet;
 
   @override
   Widget build(BuildContext context) {
@@ -25,16 +27,16 @@ class ItemMembersListWidget extends StatelessWidget {
               child: Material(
                 color: Colors.transparent,
                 child: person.image == ''
-                    ? const Image(
-                        image: AssetImage(kLogoImagePath),
-                        width: 100,
-                        height: 100,
+                    ? Image(
+                        image: const AssetImage(kLogoImagePath),
+                        width: isTablet ? MediaQuery.of(context).size.width*0.1 : MediaQuery.of(context).size.width*0.2,
+                        height: isTablet ? MediaQuery.of(context).size.width*0.1 : MediaQuery.of(context).size.width*0.2,
                         fit: BoxFit.cover,
                       )
                     : Utils.imageFromBase64String(
                         person.image,
-                        width: 100.0,
-                        height: 100.0,
+                        width: isTablet ? MediaQuery.of(context).size.width*0.1 : MediaQuery.of(context).size.width*0.2,
+                        height: isTablet ? MediaQuery.of(context).size.width*0.1 : MediaQuery.of(context).size.width*0.2,
                         fit: BoxFit.cover,
                       ),
               ),
@@ -43,7 +45,7 @@ class ItemMembersListWidget extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
               child: Text(
                 '${person.id} - ${person.name}',
-                style: const TextStyle(fontSize: 20),
+                style: TextStyle(fontSize: isTablet ? 20 : 16),
               ),
             ),
           ],

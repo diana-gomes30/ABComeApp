@@ -1,11 +1,8 @@
-import 'package:abcome_app/models/mandate.dart';
 import 'package:abcome_app/models/person.dart';
-import 'package:abcome_app/repositories/mandate_repository.dart';
 import 'package:abcome_app/repositories/person_repository.dart';
 import 'package:abcome_app/responsive/mobile/members/mobile_members_page.dart';
 import 'package:abcome_app/responsive/responsive_layout.dart';
 import 'package:abcome_app/responsive/tablet/members/tablet_members_page.dart';
-import 'package:abcome_app/widgets/item_members_list_widget.dart';
 import 'package:abcome_app/widgets/my_app_bar.dart';
 import 'package:abcome_app/widgets/my_app_drawer.dart';
 import 'package:abcome_app/utils/constants.dart';
@@ -55,13 +52,10 @@ class _MembersPageState extends State<MembersPage> {
           color: kWhiteColor,
         ),
         onPressed: () {
-          print('List Person Length: ${personsList.length}');
           if (personsList.length < personLimit) {
             Navigator.pushNamed(context, MemberDetailsPage.id).whenComplete(
               () async {
-                setState(() => isLoading = true);
                 await getData();
-                setState(() => isLoading = false);
               },
             );
           } else {
@@ -104,9 +98,15 @@ class _MembersPageState extends State<MembersPage> {
           ? const Center(
               child: CircularProgressIndicator(),
             )
-          : const ResponsiveLayout(
-              mobileBody: MobileMembersPage(),
-              tabletBody: TabletMembersPage(),
+          : ResponsiveLayout(
+              mobileBody: MobileMembersPage(
+                personList: personsList,
+                updateState: () => getData(),
+              ),
+              tabletBody: TabletMembersPage(
+                personList: personsList,
+                updateState: () => getData(),
+              ),
             ),
     );
   }

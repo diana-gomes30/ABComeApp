@@ -6,11 +6,13 @@ class ProfileWidget extends StatelessWidget {
   const ProfileWidget({
     Key? key,
     required this.imagePath,
+    required this.isTablet,
     required this.onClicked,
     this.isSettingsPage = false,
   }) : super(key: key);
 
   final String imagePath;
+  final bool isTablet;
   final VoidCallback onClicked;
   final bool isSettingsPage;
 
@@ -18,17 +20,17 @@ class ProfileWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     const color = kPrimaryColor;
     return Container(
-      padding: const EdgeInsets.only(left: 75, right: 75),
+      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.10, vertical: MediaQuery.of(context).size.height*0.05),
       child: Center(
         child: Stack(
           children: [
-            buildImage(),
+            buildImage(context),
             isSettingsPage
                 ? const SizedBox(height: 0)
                 : Positioned(
                     bottom: 0,
-                    right: 20,
-                    child: buildEditIcon(color),
+                    right: isTablet ? MediaQuery.of(context).size.width*0.03 : MediaQuery.of(context).size.width*0.05,
+                    child: buildEditIcon(color, context),
                   ),
           ],
         ),
@@ -36,27 +38,28 @@ class ProfileWidget extends StatelessWidget {
     );
   }
 
-  Widget buildImage() {
+  Widget buildImage(BuildContext context) {
     return ClipOval(
       child: Material(
         color: Colors.transparent,
         child: Utils.imageFromBase64String(
           imagePath,
-          width: 300.0,
-          height: 300.0,
+          width: isTablet ? MediaQuery.of(context).size.width*0.3 : MediaQuery.of(context).size.width*0.4, //isTablet ? 300.0 : 150.0,
+          height: isTablet ? MediaQuery.of(context).size.width*0.3 : MediaQuery.of(context).size.width*0.4,
           fit: BoxFit.cover,
         ),
       ),
     );
   }
 
-  Widget buildEditIcon(Color color) => buildCircle(
+  Widget buildEditIcon(Color color, BuildContext context) => buildCircle(
         color: color,
         all: 0,
+        size: isTablet ? MediaQuery.of(context).size.width*0.05 : MediaQuery.of(context).size.width*0.1,
         child: IconButton(
           icon: const Icon(Icons.edit),
           color: Colors.white,
-          iconSize: 20,
+          iconSize: isTablet ? MediaQuery.of(context).size.width*0.02 : MediaQuery.of(context).size.width*0.05,
           onPressed: onClicked,
         ),
       );
@@ -65,10 +68,13 @@ class ProfileWidget extends StatelessWidget {
     required Widget child,
     required double all,
     required Color color,
+    required double size,
   }) =>
       ClipOval(
         child: Container(
           padding: EdgeInsets.all(all),
+          width: size,
+          height: size,
           color: color,
           child: child,
         ),

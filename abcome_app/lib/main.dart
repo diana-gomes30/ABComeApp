@@ -10,9 +10,21 @@ import 'package:abcome_app/screens/settings_page.dart';
 import 'package:abcome_app/utils/constants.dart';
 import 'package:abcome_app/utils/lifecycle_manager.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final double screenWidth =
+      MediaQueryData.fromWindow(WidgetsBinding.instance.window).size.width;
+  if (screenWidth < 600) {
+    await SystemChrome.setPreferredOrientations(
+        [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+  } else {
+    await SystemChrome.setPreferredOrientations(
+        [DeviceOrientation.landscapeRight, DeviceOrientation.landscapeLeft]);
+  }
+
   runApp(const MyApp());
 }
 
@@ -50,4 +62,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-

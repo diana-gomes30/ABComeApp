@@ -38,6 +38,7 @@ class _TabletMemberDetailsPageState extends State<TabletMemberDetailsPage> {
             ProfileWidget(
               imagePath: widget.imagePath != '' ? widget.imagePath : kLogoImagePath,
               onClicked: widget.onClickedImage,
+              isTablet: true,
             ),
             Expanded(
               child: Container(

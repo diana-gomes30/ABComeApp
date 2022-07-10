@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:abcome_app/repositories/person_repository.dart';
-import 'package:abcome_app/responsive/mobile/members/mobile_member_details-page.dart';
+import 'package:abcome_app/responsive/mobile/members/mobile_member_details_page.dart';
 import 'package:abcome_app/responsive/mobile/members/mobile_members_page.dart';
 import 'package:abcome_app/responsive/responsive_layout.dart';
 import 'package:abcome_app/responsive/tablet/members/tablet_member_details_page.dart';
