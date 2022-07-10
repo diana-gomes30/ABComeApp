@@ -2,6 +2,9 @@ import 'package:abcome_app/models/mandate.dart';
 import 'package:abcome_app/models/person.dart';
 import 'package:abcome_app/repositories/mandate_repository.dart';
 import 'package:abcome_app/repositories/person_repository.dart';
+import 'package:abcome_app/responsive/mobile/members/mobile_members_page.dart';
+import 'package:abcome_app/responsive/responsive_layout.dart';
+import 'package:abcome_app/responsive/tablet/members/tablet_members_page.dart';
 import 'package:abcome_app/widgets/item_members_list_widget.dart';
 import 'package:abcome_app/widgets/my_app_bar.dart';
 import 'package:abcome_app/widgets/my_app_drawer.dart';
@@ -35,9 +38,6 @@ class _MembersPageState extends State<MembersPage> {
     setState(() => isLoading = true);
 
     personsList = await PersonRepository.readAll();
-    //Mandate? mandate = await MandateRepository.readActive();
-    //personLimit = mandate.personLimit;
-    print('Person Limit $personLimit');
 
     setState(() => isLoading = false);
   }
@@ -104,33 +104,9 @@ class _MembersPageState extends State<MembersPage> {
           ? const Center(
               child: CircularProgressIndicator(),
             )
-          : SafeArea(
-              child: GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 4,
-                ),
-                itemCount: personsList.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return ItemMembersListWidget(
-                    person: personsList[index],
-                    onClicked: () {
-                      final int? personId = personsList[index].id;
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => MemberDetailsPage(
-                            personId: personId,
-                          ),
-                        ),
-                      ).whenComplete(() async {
-                        setState(() => isLoading = true);
-                        await getData();
-                        setState(() => isLoading = false);
-                      });
-                    },
-                  );
-                },
-              ),
+          : const ResponsiveLayout(
+              mobileBody: MobileMembersPage(),
+              tabletBody: TabletMembersPage(),
             ),
     );
   }

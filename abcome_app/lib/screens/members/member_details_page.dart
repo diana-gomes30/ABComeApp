@@ -1,5 +1,9 @@
 import 'dart:io';
 import 'package:abcome_app/repositories/person_repository.dart';
+import 'package:abcome_app/responsive/mobile/members/mobile_member_details-page.dart';
+import 'package:abcome_app/responsive/mobile/members/mobile_members_page.dart';
+import 'package:abcome_app/responsive/responsive_layout.dart';
+import 'package:abcome_app/responsive/tablet/members/tablet_member_details_page.dart';
 import 'package:abcome_app/utils/utils.dart';
 import 'package:abcome_app/widgets/icon_bottom_sheet_widget.dart';
 import 'package:abcome_app/widgets/my_app_bar.dart';
@@ -26,7 +30,7 @@ class _MemberDetailsPageState extends State<MemberDetailsPage> {
   late Person? person;
   late TextEditingController nameController;
   late String imagePath = '';
-  String defaultImagePath = kLogoImagePath;
+  //String defaultImagePath = kLogoImagePath;
   bool wasPresident = false;
   bool wasTreasurer = false;
 
@@ -59,123 +63,32 @@ class _MemberDetailsPageState extends State<MemberDetailsPage> {
           isEditing ? await updatePerson() : await insertPerson();
         },
       ),
-      body: SafeArea(
-        child: Center(
-          child: Row(
-            children: [
-              ProfileWidget(
-                imagePath: imagePath != '' ? imagePath : defaultImagePath,
-                onClicked: () async {
-                  await modalBottomSheet();
-                },
-              ),
-              Expanded(
-                child: Container(
-                  margin: const EdgeInsets.only(left: 30),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      /*Container(
-                        width: MediaQuery.of(context).size.width*0.50,
-                        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
-                        child: TextField(
-                          style: const TextStyle(
-                            fontSize: 20,
-                          ),
-                          autofocus: false,
-                          controller: nameController,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12.0),
-                            ),
-                          ),
-                        ),
-                      ),*/
-                      Container(
-                        width: MediaQuery.of(context).size.width * 0.40,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 16),
-                        child: TextField(
-                          style: const TextStyle(
-                            fontSize: 20,
-                          ),
-                          autofocus: false,
-                          controller: nameController,
-                          decoration: InputDecoration(
-                            focusedBorder: const OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: kPrimaryColor,
-                                width: 1.0,
-                              ),
-                            ),
-                            enabledBorder: const OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: kPrimaryColor,
-                                width: 1.0,
-                              ),
-                            ),
-                            border: const OutlineInputBorder(),
-                            labelText: 'Nome',
-                            labelStyle: const TextStyle(
-                              color: kSecondaryColor,
-                            ),
-                            hintText: 'Insira o seu nome',
-                            hintStyle: TextStyle(
-                              fontSize: 16.0,
-                              color: kPrimaryColor.withOpacity(0.5),
-                            ),
-                            contentPadding:
-                                const EdgeInsets.symmetric(vertical: 15.0),
-                            prefixIcon: const Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 20.0),
-                              child: Icon(
-                                FontAwesomeIcons.user,
-                                color: kSecondaryColor,
-                                size: 25,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.25,
-                        child: CheckboxListTile(
-                          activeColor: kPrimaryColor,
-                          title: const Text(
-                            'Já foi Presidente?',
-                            style: TextStyle(fontSize: 20),
-                          ),
-                          value: wasPresident,
-                          onChanged: (value) {
-                            setState(() {
-                              wasPresident = value!;
-                            });
-                          },
-                        ),
-                      ),
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.25,
-                        child: CheckboxListTile(
-                          activeColor: kPrimaryColor,
-                          title: const Text(
-                            'Já foi Tesoureiro?',
-                            style: TextStyle(fontSize: 20),
-                          ),
-                          value: wasTreasurer,
-                          onChanged: (value) {
-                            setState(() {
-                              wasTreasurer = value!;
-                            });
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
+      body: ResponsiveLayout(
+        mobileBody: MobileMemberDetailsPage(
+          imagePath: imagePath,
+          nameController: nameController,
+          wasPresident: wasPresident,
+          wasTreasurer: wasTreasurer,
+          onClickedImage: () async => await modalBottomSheet(),
+          onChangedPresident: (value) {
+            setState(() => wasPresident = value);
+          },
+          onChangedTreasurer: (value) {
+            setState(() => wasTreasurer = value);
+          },
+        ),
+        tabletBody: TabletMemberDetailsPage(
+          imagePath: imagePath,
+          nameController: nameController,
+          wasPresident: wasPresident,
+          wasTreasurer: wasTreasurer,
+          onClickedImage: () async => await modalBottomSheet(),
+          onChangedPresident: (value) {
+            setState(() => wasPresident = value);
+          },
+          onChangedTreasurer: (value) {
+            setState(() => wasTreasurer = value);
+          },
         ),
       ),
     );
@@ -194,7 +107,9 @@ class _MemberDetailsPageState extends State<MemberDetailsPage> {
         nameController = TextEditingController(text: person!.name);
         imagePath = person!.image;
         wasPresident = person!.wasPresident == 0 ? false : true;
+        print('President: $wasPresident');
         wasTreasurer = person!.wasTreasurer == 0 ? false : true;
+        print('Treasurer: $wasTreasurer');
       }
     } else {
       isEditing = false;
