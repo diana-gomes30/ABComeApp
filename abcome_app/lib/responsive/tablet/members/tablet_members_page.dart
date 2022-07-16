@@ -1,6 +1,6 @@
 import 'package:abcome_app/models/person.dart';
 import 'package:abcome_app/screens/members/member_details_page.dart';
-import 'package:abcome_app/widgets/item_members_list_widget.dart';
+import 'package:abcome_app/widgets/item_members_grid_view.dart';
 import 'package:flutter/material.dart';
 
 class TabletMembersPage extends StatelessWidget {
@@ -21,7 +21,7 @@ class TabletMembersPage extends StatelessWidget {
       ),
       itemCount: personList.length,
       itemBuilder: (BuildContext context, int index) {
-        return ItemMembersListWidget(
+        return ItemMembersGridView(
           isTablet: true,
           person: personList[index],
           onClicked: () {

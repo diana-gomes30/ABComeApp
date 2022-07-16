@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:abcome_app/models/mandate.dart';
 import 'package:abcome_app/models/person.dart';
 import 'package:abcome_app/models/poll.dart';

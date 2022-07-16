@@ -6,8 +6,8 @@ class CustomDivider extends StatelessWidget {
     Key? key,
     this.heightBox = 10.0,
     this.heightDivider = 1.0,
-    this.start = 50.0,
-    this.end = 50.0,
+    this.start = 30.0,
+    this.end = 30.0,
     this.color = kPrimaryColor
   }) : super(key: key);
 

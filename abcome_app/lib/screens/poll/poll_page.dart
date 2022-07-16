@@ -4,9 +4,10 @@ import 'package:abcome_app/repositories/mandate_repository.dart';
 import 'package:abcome_app/repositories/person_repository.dart';
 import 'package:abcome_app/repositories/poll_repository.dart';
 import 'package:abcome_app/repositories/statistic_repository.dart';
+import 'package:abcome_app/responsive/mobile/poll/mobile_poll_page.dart';
+import 'package:abcome_app/responsive/responsive_layout.dart';
+import 'package:abcome_app/responsive/tablet/poll/tablet_poll_page.dart';
 import 'package:abcome_app/screens/poll/vote_page.dart';
-import 'package:abcome_app/utils/constants.dart';
-import 'package:abcome_app/utils/utils.dart';
 import 'package:abcome_app/widgets/custom_alert_dialog.dart';
 import 'package:abcome_app/widgets/my_app_bar.dart';
 import 'package:abcome_app/widgets/my_app_drawer.dart';
@@ -23,10 +24,11 @@ class PollPage extends StatefulWidget {
 class _PollPageState extends State<PollPage> {
   bool isLoading = false;
 
-  bool value = true;
   List<Person> personsList = [];
   int numPersons = 0;
   late Poll currentPoll;
+
+  bool value = true;
 
   @override
   void initState() {
@@ -61,160 +63,64 @@ class _PollPageState extends State<PollPage> {
               child: CircularProgressIndicator(),
             )
           : SafeArea(
-              child: Column(
-                children: [
-                  const Flexible(
-                    flex: 1,
-                    fit: FlexFit.loose,
-                    child: Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Align(
-                        alignment: Alignment.center,
-                        child: Text(
-                          'Selecione os membros que irão votar',
-                          style: TextStyle(
-                            fontSize: 25,
-                            color: kPrimaryColor,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Flexible(
-                    flex: 6,
-                    fit: FlexFit.loose,
-                    child: Container(
-                      padding: const EdgeInsets.all(15.0),
-                      child: GridView.builder(
-                        shrinkWrap: true,
-                        itemCount: personsList.length,
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 4,
-                          childAspectRatio: MediaQuery.of(context).size.width /
-                              (MediaQuery.of(context).size.height * 0.5),
-                        ),
-                        itemBuilder: (_, i) {
-                          return GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                value = !value;
-                                personsList[i].isVoting = value ? 1 : 0;
-                              });
-                            },
-                            child: Builder(
-                              builder: (context) {
-                                return buildPersonCard(i);
-                              },
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-                  Flexible(
-                    flex: 1,
-                    fit: FlexFit.loose,
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: kPrimaryColor,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: TextButton(
-                          onPressed: () async {
-                            int num = 0;
-                            for (Person p in personsList) {
-                              if (p.isVoting == 1) {
-                                num++;
-                              }
-                            }
-                            if (num > 0) {
-                              setState(() => isLoading = true);
-                              bool updated = await updatePersons();
-                              setState(() => isLoading = false);
-                              if (updated) {
-                                await insertUpdatePoll();
-                              }
-                            } else {
-                              return showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return const CustomAlertDialog(
-                                    title: 'Atenção!',
-                                    content:
-                                        'Não é possível iniciar uma votação \nsem pessoas para votar.',
-                                  );
-                                },
-                              );
-                            }
-                          },
-                          child: const Text(
-                            'Iniciar Votação',
-                            style: TextStyle(
-                              color: kWhiteColor,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+              child: ResponsiveLayout(
+                mobileBody: MobilePollPage(
+                  personsList: personsList,
+                  onClickCardPerson: (i) => onClickCardPerson(i),
+                  onChangeCardValue: (i, newValue) => onChangeCardValue(i, newValue),
+                  onClickCreatePoll: () => onClickCreatePoll(),
+                ),
+                tabletBody: TabletPollPage(
+                  personsList: personsList,
+                  onClickCardPerson: (i) => onClickCardPerson(i),
+                  onChangeCardValue: (i, newValue) => onChangeCardValue(i, newValue),
+                  onClickCreatePoll: () => onClickCreatePoll(),
+                ),
               ),
             ),
     );
   }
 
-  SizedBox buildPersonCard(int i) {
-    return SizedBox(
-      height: 100,
-      child: Card(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.0),
-        ),
-        elevation: 5,
-        clipBehavior: Clip.antiAliasWithSaveLayer,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            CheckboxListTile(
-              secondary: personsList[i].image == ''
-                  ? const Image(
-                      image: AssetImage(kLogoImagePath),
-                      width: 50,
-                      height: 50,
-                      fit: BoxFit.cover,
-                    )
-                  : Utils.imageFromBase64String(
-                      personsList[i].image,
-                      width: 50.0,
-                      height: 50.0,
-                      fit: BoxFit.cover,
-                    ),
-              activeColor: kPrimaryColor,
-              dense: true,
-              //font change
-              title: Text(
-                personsList[i].name,
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: 0.5,
-                ),
-              ),
-              value: personsList[i].isVoting == 0 ? false : true,
-              onChanged: (newValue) {
-                setState(
-                  () {
-                    personsList[i].isVoting = newValue! ? 1 : 0;
-                  },
-                );
-              },
-            ),
-          ],
-        ),
-      ),
-    );
+  Future<void> onClickCardPerson(int i) async {
+    setState(() {
+      value = !value;
+      personsList[i].isVoting = value ? 1 : 0;
+    });
+  }
+
+  Future<void> onChangeCardValue(int i, bool newValue) async {
+      setState(() {
+          personsList[i].isVoting = newValue ? 1 : 0;
+        },
+      );
+  }
+
+  Future<void> onClickCreatePoll() async {
+    setState(() => isLoading = true);
+    int num = 0;
+    for (Person p in personsList) {
+      if (p.isVoting == 1) {
+        num++;
+      }
+    }
+    if (num > 0) {
+      bool updated = await updatePersons();
+      if (updated) {
+        await insertUpdatePoll();
+      }
+      setState(() => isLoading = false);
+    } else {
+      return showDialog(
+        context: context,
+        builder: (context) {
+          return const CustomAlertDialog(
+            title: 'Atenção!',
+            content:
+            'Não é possível iniciar uma votação \nsem pessoas para votar.',
+          );
+        },
+      ).whenComplete(() => setState(() => isLoading = false));
+    }
   }
 
   Future<bool> updatePersons() async {
@@ -294,7 +200,7 @@ class _PollPageState extends State<PollPage> {
             );
           },
         ).then((value) {
-          if(value) {
+          if (value) {
             Navigator.pushNamed(context, VotePage.id);
           }
         });

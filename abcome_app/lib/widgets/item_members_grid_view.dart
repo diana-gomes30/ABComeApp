@@ -3,8 +3,8 @@ import 'package:abcome_app/utils/constants.dart';
 import 'package:abcome_app/utils/utils.dart';
 import 'package:flutter/material.dart';
 
-class ItemMembersListWidget extends StatelessWidget {
-  const ItemMembersListWidget({
+class ItemMembersGridView extends StatelessWidget {
+  const ItemMembersGridView({
     Key? key,
     required this.person,
     required this.onClicked,

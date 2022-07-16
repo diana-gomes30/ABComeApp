@@ -109,7 +109,7 @@ class _MyAppDrawerState extends State<MyAppDrawer> {
                               context, ResultsPage.id);
                         },
                       ),
-                      ListTile(
+                      /*ListTile(
                         title: const Text('Histórico'),
                         leading: const Icon(
                           Icons.article,
@@ -119,7 +119,7 @@ class _MyAppDrawerState extends State<MyAppDrawer> {
                           Navigator.pushReplacementNamed(
                               context, HistoricPage.id);
                         },
-                      ),
+                      ),*/
                     ],
                   ),
                 ),

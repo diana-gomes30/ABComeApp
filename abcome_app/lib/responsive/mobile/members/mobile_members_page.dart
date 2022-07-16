@@ -1,6 +1,6 @@
 import 'package:abcome_app/models/person.dart';
 import 'package:abcome_app/screens/members/member_details_page.dart';
-import 'package:abcome_app/widgets/item_members_list_widget.dart';
+import 'package:abcome_app/widgets/item_members_grid_view.dart';
 import 'package:flutter/material.dart';
 
 class MobileMembersPage extends StatelessWidget {
@@ -21,7 +21,7 @@ class MobileMembersPage extends StatelessWidget {
       ),
       itemCount: personList.length,
       itemBuilder: (BuildContext context, int index) {
-        return ItemMembersListWidget(
+        return ItemMembersGridView(
           isTablet: false,
           person: personList[index],
           onClicked: () {
@@ -42,25 +42,4 @@ class MobileMembersPage extends StatelessWidget {
 }
 
 /*
-ListView.builder(
-        itemCount: personList.length,
-        itemBuilder: (BuildContext context, int index) {
-          return MobileItemMembersList(
-            person: personList[index],
-            onClicked: () {
-              final int? personId = personList[index].id;
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => MemberDetailsPage(
-                    personId: personId,
-                  ),
-                ),
-              ).whenComplete(() async {
-                await getData();
-              });
-            },
-          );
-        },
-      ),
 */
