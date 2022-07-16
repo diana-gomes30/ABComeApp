@@ -3,7 +3,7 @@ import 'package:abcome_app/widgets/profile_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class TabletMemberDetailsPage extends StatefulWidget {
+class TabletMemberDetailsPage extends StatelessWidget {
   const TabletMemberDetailsPage({
     Key? key,
     required this.imagePath,
@@ -24,19 +24,13 @@ class TabletMemberDetailsPage extends StatefulWidget {
   final Function onChangedTreasurer;
 
   @override
-  State<TabletMemberDetailsPage> createState() =>
-      _TabletMemberDetailsPageState();
-}
-
-class _TabletMemberDetailsPageState extends State<TabletMemberDetailsPage> {
-  @override
   Widget build(BuildContext context) {
     return Center(
       child: Row(
         children: [
           ProfileWidget(
-            imagePath: widget.imagePath != '' ? widget.imagePath : kLogoImagePath,
-            onClicked: widget.onClickedImage,
+            imagePath: imagePath != '' ? imagePath : kLogoImagePath,
+            onClicked: onClickedImage,
             isTablet: true,
           ),
           Expanded(
@@ -55,7 +49,7 @@ class _TabletMemberDetailsPageState extends State<TabletMemberDetailsPage> {
                         fontSize: 20,
                       ),
                       autofocus: false,
-                      controller: widget.nameController,
+                      controller: nameController,
                       decoration: InputDecoration(
                         focusedBorder: const OutlineInputBorder(
                           borderSide: BorderSide(
@@ -100,8 +94,8 @@ class _TabletMemberDetailsPageState extends State<TabletMemberDetailsPage> {
                         'Já foi Presidente?',
                         style: TextStyle(fontSize: 20),
                       ),
-                      value: widget.wasPresident,
-                      onChanged: (value) => widget.onChangedPresident(value),
+                      value: wasPresident,
+                      onChanged: (value) => onChangedPresident(value),
                     ),
                   ),
                   SizedBox(
@@ -112,8 +106,8 @@ class _TabletMemberDetailsPageState extends State<TabletMemberDetailsPage> {
                         'Já foi Tesoureiro?',
                         style: TextStyle(fontSize: 20),
                       ),
-                      value: widget.wasTreasurer,
-                      onChanged: (value) => widget.onChangedTreasurer(value),
+                      value: wasTreasurer,
+                      onChanged: (value) => onChangedTreasurer(value),
                     ),
                   ),
                 ],

@@ -1,5 +1,4 @@
 import 'package:abcome_app/models/person.dart';
-import 'package:abcome_app/utils/constants.dart';
 import 'package:abcome_app/widgets/custom_divider.dart';
 import 'package:abcome_app/widgets/person_card_poll.dart';
 import 'package:abcome_app/widgets/start_poll_button.dart';

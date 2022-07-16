@@ -3,7 +3,7 @@ import 'package:abcome_app/widgets/profile_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class MobileMemberDetailsPage extends StatefulWidget {
+class MobileMemberDetailsPage extends StatelessWidget {
   const MobileMemberDetailsPage({
     Key? key,
     required this.imagePath,
@@ -24,19 +24,13 @@ class MobileMemberDetailsPage extends StatefulWidget {
   final Function onChangedTreasurer;
 
   @override
-  State<MobileMemberDetailsPage> createState() =>
-      _MobileMemberDetailsPageState();
-}
-
-class _MobileMemberDetailsPageState extends State<MobileMemberDetailsPage> {
-  @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Column(
         children: [
           ProfileWidget(
-            imagePath: widget.imagePath != '' ? widget.imagePath : kLogoImagePath,
-            onClicked: widget.onClickedImage,
+            imagePath: imagePath != '' ? imagePath : kLogoImagePath,
+            onClicked: onClickedImage,
             isTablet: false,
           ),
           Container(
@@ -47,7 +41,7 @@ class _MobileMemberDetailsPageState extends State<MobileMemberDetailsPage> {
                 fontSize: 14,
               ),
               autofocus: false,
-              controller: widget.nameController,
+              controller: nameController,
               decoration: InputDecoration(
                 focusedBorder: const OutlineInputBorder(
                   borderSide: BorderSide(
@@ -79,8 +73,7 @@ class _MobileMemberDetailsPageState extends State<MobileMemberDetailsPage> {
               ),
             ),
           ),
-          Container(
-            //padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.05),
+          SizedBox(
             width: MediaQuery.of(context).size.width*0.6,
             child: CheckboxListTile(
               activeColor: kPrimaryColor,
@@ -88,12 +81,11 @@ class _MobileMemberDetailsPageState extends State<MobileMemberDetailsPage> {
                 'Já foi Presidente?',
                 style: TextStyle(fontSize: 14),
               ),
-              value: widget.wasPresident,
-              onChanged: (value) => widget.onChangedPresident(value),
+              value: wasPresident,
+              onChanged: (value) => onChangedPresident(value),
             ),
           ),
-          Container(
-            //padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.05),
+          SizedBox(
             width: MediaQuery.of(context).size.width*0.6,
             child: CheckboxListTile(
               activeColor: kPrimaryColor,
@@ -101,8 +93,8 @@ class _MobileMemberDetailsPageState extends State<MobileMemberDetailsPage> {
                 'Já foi Tesoureiro?',
                 style: TextStyle(fontSize: 14),
               ),
-              value: widget.wasTreasurer,
-              onChanged: (value) => widget.onChangedTreasurer(value),
+              value: wasTreasurer,
+              onChanged: (value) => onChangedTreasurer(value),
             ),
           ),
         ]
