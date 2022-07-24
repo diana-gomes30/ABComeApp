@@ -71,6 +71,9 @@ class MobileResultsPage extends StatelessWidget {
                               personList,
                               lastPoll!.numPersons,
                             ),
+                            const SizedBox(
+                              height: 30,
+                            )
                           ],
                         ),
                       ),
