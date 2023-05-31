@@ -1,4 +1,6 @@
+import 'package:abcome_app/models/mandate.dart';
 import 'package:abcome_app/models/poll.dart';
+import 'package:abcome_app/repositories/mandate_repository.dart';
 import 'package:abcome_app/repositories/poll_repository.dart';
 import 'package:abcome_app/widgets/my_app_bar.dart';
 import 'package:abcome_app/widgets/my_app_drawer.dart';
@@ -14,7 +16,7 @@ class HistoricPage extends StatefulWidget {
 
 class _HistoricPageState extends State<HistoricPage> {
   bool isLoading = false;
-  List<Poll> pollList = [];
+  List<Mandate> mandateList = [];
 
   @override
   void initState() {
@@ -25,7 +27,7 @@ class _HistoricPageState extends State<HistoricPage> {
 
   Future<void> getData() async {
     setState(() => isLoading = true);
-    pollList = await PollRepository.readAll();
+    mandateList = await MandateRepository.readAll();
     setState(() => isLoading = false);
   }
 
@@ -42,11 +44,11 @@ class _HistoricPageState extends State<HistoricPage> {
             )
           : SafeArea(
               child: ListView.builder(
-                itemCount: pollList.length,
+                itemCount: mandateList.length,
                 itemBuilder: (context, index) {
                   return ListTile(
                     title: Text(
-                        'IdPoll: ${pollList[index].id} || NumPersons: ${pollList[index].numPersons} || Year: ${pollList[index].year} || President: ${pollList[index].presidentId} || Treasurer: ${pollList[index].treasurerId} || Active: ${pollList[index].active}'),
+                        'IdPoll: ${mandateList[index].id} || NumPersons: ${mandateList[index].personLimit} || President: ${mandateList[index].presidentId} || Treasurer: ${mandateList[index].treasurerId} || Active: ${mandateList[index].active}'),
                   );
                 },
               ),

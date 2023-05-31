@@ -50,10 +50,12 @@ class TabletVotePage extends StatelessWidget {
               TextFieldVotePage(
                 onClickPerson: onClickPresident,
                 personController: presidentController,
+                type: 1,
               ),
               TextFieldVotePage(
                 onClickPerson: onClickTreasurer,
                 personController: treasurerController,
+                type: 2,
               ),
               ConfirmVoteButton(
                 onClickConfirmVote: onClickConfirmVote,

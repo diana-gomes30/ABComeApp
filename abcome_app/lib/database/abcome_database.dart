@@ -2,6 +2,7 @@ import 'package:abcome_app/models/person.dart';
 import 'package:abcome_app/models/poll.dart';
 import 'package:abcome_app/models/statistic.dart';
 import 'package:abcome_app/models/mandate.dart';
+import 'package:abcome_app/utils/constants.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -106,7 +107,7 @@ class ABComeDatabase {
     final defaultPresident = Person(
       id: 1,
       name: 'Presidente',
-      image: '',
+      image: kLogoImagePath,
       wasPresident: 1,
       wasTreasurer: 0,
       isVoting: 0,
@@ -117,7 +118,7 @@ class ABComeDatabase {
     final defaultTreasurer = Person(
       id: 2,
       name: 'Tesoureiro',
-      image: '',
+      image: kLogoImagePath,
       wasPresident: 0,
       wasTreasurer: 1,
       isVoting: 0,

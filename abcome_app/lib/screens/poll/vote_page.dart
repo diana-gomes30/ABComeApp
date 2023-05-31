@@ -18,6 +18,8 @@ import 'package:abcome_app/widgets/my_app_bar.dart';
 import 'package:abcome_app/widgets/my_app_drawer.dart';
 import 'package:flutter/material.dart';
 
+import '../../utils/utils.dart';
+
 class VotePage extends StatefulWidget {
   const VotePage({Key? key}) : super(key: key);
   static const String id = '/vote_page';
@@ -164,7 +166,6 @@ class _VotePageState extends State<VotePage> {
         setState(() {
           final Person personVoting = value;
           person = personVoting.copy();
-          print('Person: ${person.id}');
           _personController.text = person.name;
         });
       }
@@ -183,7 +184,6 @@ class _VotePageState extends State<VotePage> {
         setState(() {
           final Person presidentVoted = value;
           president = presidentVoted.copy();
-          print('President: ${president.id}');
           _presidentController.text = president.name;
         });
       }
@@ -202,7 +202,6 @@ class _VotePageState extends State<VotePage> {
         setState(() {
           final Person treasurerVoted = value;
           treasurer = treasurerVoted.copy();
-          print('Treasurer: ${treasurer.id}');
           _treasurerController.text = treasurer.name;
         });
       }
@@ -260,8 +259,8 @@ class _VotePageState extends State<VotePage> {
 
                         if (personsList.isEmpty) {
                           setState(() => isLoading = true);
-                          await closePoll();
                           await updateInsertMandate();
+                          await closePoll();
                           Navigator.pushReplacementNamed(context, HomePage.id);
                           setState(() => isLoading = false);
                         } else {
@@ -351,7 +350,7 @@ class _VotePageState extends State<VotePage> {
   }
 
   Future<dynamic> _showListPersonsDialog(
-          String title, List<Person> namesList, bool isPersonVoting) async =>
+          String title, List<Person> personsList, bool isPersonVoting) async =>
       showDialog(
         context: context,
         builder: (context) {
@@ -371,9 +370,9 @@ class _VotePageState extends State<VotePage> {
               ),
             ),
             content: SizedBox(
-              height: namesList.isEmpty ? 150 : 350,
+              height: personsList.isEmpty ? 150 : 350,
               width: 400,
-              child: namesList.isEmpty
+              child: personsList.isEmpty
                   ? const Center(
                       child: Text(
                           'Não foi possível encontrar membros. Por favor, verifique se tem membros adicionados à aplicação.'),
@@ -382,17 +381,36 @@ class _VotePageState extends State<VotePage> {
                       child: Column(
                         children: [
                           const SizedBox(height: 10.0),
-                          for (var i in namesList)
+                          for (var i in personsList)
                             Column(
                               children: [
                                 const CustomDivider(
-                                  start: 40.0,
-                                  end: 40.0,
+                                  start: 0,
+                                  end: 0,
                                 ),
                                 ListTile(
+                                  leading: ClipOval(
+                                    child: Material(
+                                      color: Colors.transparent,
+                                      child: i.image == ''
+                                          ? const Image(
+                                              image: AssetImage(kLogoImagePath),
+                                              fit: BoxFit.cover,
+                                              width: 50,
+                                              height: 50,
+                                            )
+                                          : Utils.imageFromBase64String(
+                                              i.image,
+                                              fit: BoxFit.cover,
+                                              width: 50,
+                                              height: 50,
+                                            ),
+                                    ),
+                                  ),
                                   title: Center(
                                     child: Text(
                                       i.name,
+                                      maxLines: 4,
                                       style: TextStyle(
                                         color: isPersonVoting
                                             ? kPrimaryColor
@@ -488,6 +506,7 @@ class _VotePageState extends State<VotePage> {
   }
 
   Future<void> updateInsertMandate() async {
+    int personLimitFinal = 0;
     Mandate? mandateActive = await MandateRepository.readActive();
     if (mandateActive != null) {
       Mandate mandateClose = mandateActive.copy(
@@ -496,22 +515,25 @@ class _VotePageState extends State<VotePage> {
 
       await MandateRepository.update(mandateClose);
 
-      List<Statistic?> statisticsPresident =
-          await StatisticRepository.readPresidentByPoll(currentPoll!.id ?? 0);
-      int idPresident = statisticsPresident.first!.personId;
-
-      List<Statistic?> statisticsTreasurer =
-          await StatisticRepository.readTreasurerByPoll(currentPoll!.id ?? 0);
-      int idTreasurer = statisticsTreasurer.first!.personId;
-
-      final Mandate mandateInserted = Mandate(
-        personLimit: mandateActive.personLimit,
-        presidentId: idPresident,
-        treasurerId: idTreasurer,
-        active: 1,
-        pollId: currentPoll!.id ?? 0,
-      );
-      await MandateRepository.insert(mandateInserted);
+      personLimitFinal = mandateActive.personLimit;
+    } else {
+      personLimitFinal = 20;
     }
+    List<Statistic?> statisticsPresident =
+        await StatisticRepository.readPresidentByPoll(currentPoll!.id ?? 0);
+    int idPresident = statisticsPresident.isNotEmpty ? statisticsPresident.first!.personId : 0;
+
+    List<Statistic?> statisticsTreasurer =
+        await StatisticRepository.readTreasurerByPoll(currentPoll!.id ?? 0);
+    int idTreasurer = statisticsTreasurer.isNotEmpty ? statisticsTreasurer.first!.personId : 0;
+
+    final Mandate mandateInserted = Mandate(
+      personLimit: personLimitFinal,
+      presidentId: idPresident,
+      treasurerId: idTreasurer,
+      active: 1,
+      pollId: currentPoll!.id ?? 0,
+    );
+    await MandateRepository.insert(mandateInserted);
   }
 }

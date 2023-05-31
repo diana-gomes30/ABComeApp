@@ -35,11 +35,8 @@ class MandateRepository {
       orderBy: orderByPoll,
     );
 
-    List<Mandate> mandateList = maps.map((json) => Mandate.fromJson(json)).toList();
-    final mandate = mandateList[0].copy();
-
     if (maps.isNotEmpty) {
-      return mandate;
+      return Mandate.fromJson(maps.first);
     } else {
       return null;
     }

@@ -44,7 +44,7 @@ class ItemMembersGridView extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
               child: Text(
-                '${person.id} - ${person.name}',
+                person.name,
                 style: TextStyle(fontSize: isTablet ? 20 : 16),
               ),
             ),

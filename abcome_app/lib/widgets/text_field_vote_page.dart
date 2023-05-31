@@ -8,11 +8,13 @@ class TextFieldVotePage extends StatelessWidget {
     required this.onClickPerson,
     required this.personController,
     this.width = 0.5,
+    this.type = 0,
   }) : super(key: key);
 
   final VoidCallback onClickPerson;
   final TextEditingController personController;
   final double width;
+  final int type;
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +37,11 @@ class TextFieldVotePage extends StatelessWidget {
                 controller: personController,
                 decoration: InputDecoration(
                   border: InputBorder.none,
-                  hintText: 'Selecione o seu nome',
+                  hintText: type == 1
+                    ? 'Selecione o presidente'
+                    : type == 2
+                      ? 'Selecione o tesoureiro'
+                      : 'Selecione o seu nome',
                   hintStyle: TextStyle(
                     fontSize: 16.0,
                     color: kPrimaryColor.withOpacity(0.5),

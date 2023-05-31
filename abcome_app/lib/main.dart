@@ -33,8 +33,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final double screenWidth =
+        MediaQueryData.fromWindow(WidgetsBinding.instance.window).size.width;
+
     // Para evitar o delay ao carregar a imagem de fundo
-    precacheImage(const AssetImage(kBackgroundImagePath), context);
+    if (screenWidth > 600) {
+      precacheImage(const AssetImage(kBackgroundTablet), context);
+    } else {
+      precacheImage(const AssetImage(kBackgroundMobile), context);
+    }
 
     return LifeCycleManager(
       child: GlobalLoaderOverlay(

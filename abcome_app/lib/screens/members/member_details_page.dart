@@ -1,17 +1,15 @@
 import 'dart:io';
 import 'package:abcome_app/repositories/person_repository.dart';
 import 'package:abcome_app/responsive/mobile/members/mobile_member_details_page.dart';
-import 'package:abcome_app/responsive/mobile/members/mobile_members_page.dart';
 import 'package:abcome_app/responsive/responsive_layout.dart';
 import 'package:abcome_app/responsive/tablet/members/tablet_member_details_page.dart';
+import 'package:abcome_app/screens/members/members_page.dart';
 import 'package:abcome_app/utils/utils.dart';
 import 'package:abcome_app/widgets/icon_bottom_sheet_widget.dart';
 import 'package:abcome_app/widgets/my_app_bar.dart';
 import 'package:abcome_app/models/person.dart';
 import 'package:abcome_app/utils/constants.dart';
-import 'package:abcome_app/widgets/profile_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 
 class MemberDetailsPage extends StatefulWidget {
@@ -30,7 +28,7 @@ class _MemberDetailsPageState extends State<MemberDetailsPage> {
   late Person? person;
   late TextEditingController nameController;
   late String imagePath = '';
-  //String defaultImagePath = kLogoImagePath;
+
   bool wasPresident = false;
   bool wasTreasurer = false;
 
@@ -51,6 +49,44 @@ class _MemberDetailsPageState extends State<MemberDetailsPage> {
     return Scaffold(
       appBar: MyAppBar(
         title: isEditing ? 'Editar Membro' : 'Adicionar Membro',
+        actions: [
+          Visibility(
+            visible: isEditing,
+            child: PopupMenuButton<int>(
+              onSelected: (value) async {
+                if (value == 1) {
+                  await onClickDeletePerson();
+                }
+              },
+              offset: Offset(0.0, AppBar().preferredSize.height),
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(8.0),
+                  bottomRight: Radius.circular(8.0),
+                  topLeft: Radius.circular(8.0),
+                  topRight: Radius.circular(8.0),
+                ),
+              ),
+              itemBuilder: (BuildContext context) => [
+                PopupMenuItem(
+                  value: 1,
+                  child: Row(
+                    children: const [
+                      Padding(
+                        padding: EdgeInsets.only(right: 8.0),
+                        child: Icon(
+                          Icons.cancel_outlined,
+                          color: Colors.red,
+                        ),
+                      ),
+                      Text('Apagar Membro'),
+                    ],
+                  ),
+                )
+              ],
+            ),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: kPrimaryColor,
@@ -96,7 +132,46 @@ class _MemberDetailsPageState extends State<MemberDetailsPage> {
     );
   }
 
-  void refreshData() async {
+  Future<void> onClickDeletePerson() async {
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(20.0),
+            ),
+          ),
+          title: const Text('Atenção!'),
+          content: const Text(
+              'Tem a certeza que pretende remover o membro do grupo?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('Não'),
+            ),
+            TextButton(
+              onPressed: () async {
+                setState(() => isLoading = true);
+                final statusPersonUpdated = person!.copy(
+                  inactive: 1,
+                );
+
+                await PersonRepository.update(statusPersonUpdated);
+                setState(() => isLoading = true);
+                Navigator.popAndPushNamed(context, MembersPage.id);
+              },
+              child: const Text('Sim'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> refreshData() async {
     setState(() => isLoading = true);
 
     nameController = TextEditingController(text: '');
@@ -120,7 +195,7 @@ class _MemberDetailsPageState extends State<MemberDetailsPage> {
     setState(() => isLoading = false);
   }
 
-  Future insertPerson() async {
+  Future<void> insertPerson() async {
     if (nameController.text != '') {
       print('Controller Name: ${nameController.text}');
       final person = Person(
@@ -140,7 +215,7 @@ class _MemberDetailsPageState extends State<MemberDetailsPage> {
     // por fazer show dialog
   }
 
-  Future updatePerson() async {
+  Future<void> updatePerson() async {
     if (nameController.text != '') {
       final person = this.person!.copy(
             name: nameController.text,

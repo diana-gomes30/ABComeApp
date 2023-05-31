@@ -51,11 +51,13 @@ class MobileVotePage extends StatelessWidget {
                 onClickPerson: onClickPresident,
                 personController: presidentController,
                 width: 0.80,
+                type: 1,
               ),
               TextFieldVotePage(
                 onClickPerson: onClickTreasurer,
                 personController: treasurerController,
                 width: 0.80,
+                type: 2,
               ),
               ConfirmVoteButton(
                 onClickConfirmVote: onClickConfirmVote,
